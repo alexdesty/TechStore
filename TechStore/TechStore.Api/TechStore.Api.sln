@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.12.35521.163 d17.12
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TechStore.Api", "TechStore.Api.csproj", "{6EC848B0-C536-4B13-BE85-C4E0B2F3B8E8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TechStore.DAL", "..\TechStore.DAL\TechStore.DAL.csproj", "{94E1E7A9-A367-41F3-B6DE-13AC95E182C5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TechStore.Domain", "..\TechStore.Domain\TechStore.Domain.csproj", "{8C9E2F4B-961B-4227-AE85-ED1CC3FD1E90}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6EC848B0-C536-4B13-BE85-C4E0B2F3B8E8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6EC848B0-C536-4B13-BE85-C4E0B2F3B8E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6EC848B0-C536-4B13-BE85-C4E0B2F3B8E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6EC848B0-C536-4B13-BE85-C4E0B2F3B8E8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{94E1E7A9-A367-41F3-B6DE-13AC95E182C5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{94E1E7A9-A367-41F3-B6DE-13AC95E182C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{94E1E7A9-A367-41F3-B6DE-13AC95E182C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{94E1E7A9-A367-41F3-B6DE-13AC95E182C5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8C9E2F4B-961B-4227-AE85-ED1CC3FD1E90}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8C9E2F4B-961B-4227-AE85-ED1CC3FD1E90}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8C9E2F4B-961B-4227-AE85-ED1CC3FD1E90}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8C9E2F4B-961B-4227-AE85-ED1CC3FD1E90}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
