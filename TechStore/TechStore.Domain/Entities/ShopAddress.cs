@@ -11,4 +11,6 @@ public class ShopAddress
     public int Id { get; set; }
 
     public string Address { get; set; } = string.Empty;
+
+    public List<Order> Orders { get; set; } = [];
 }

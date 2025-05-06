@@ -21,9 +21,10 @@ public class User
 
     public string Password { get; set; } = string.Empty ;
 
-    public UserRole Role {  get; set; } 
+    public UserRole Role {  get; set; }
 
-    public List<Cart> Carts { get; set; }
+    public List<Cart> Carts { get; set; } = [];
 
-    public Order Order { get; set; }
+    public List<Order> Orders { get; set; } = [];
+
 }

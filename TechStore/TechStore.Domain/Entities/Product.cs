@@ -21,4 +21,6 @@ public class Product
     public int CategoryId { get; set; }
 
     Category Category { get; set; }
+
+    public List<ProductToProperty> ProductsToProperties { get; set; } = [];
 }

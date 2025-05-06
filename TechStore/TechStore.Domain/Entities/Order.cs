@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using TechStore.Domain.Enums;
 
 namespace TechStore.Domain.Entities
@@ -11,13 +12,14 @@ namespace TechStore.Domain.Entities
     {
         public int Id { get; set; }
 
-        public User User { get; set; }  
+        [DeleteBehavior(DeleteBehavior.NoAction)]
+        public User User { get; set; }  = new User();
 
         public int UserId { get; set; }
 
         public int CartId { get; set; }
 
-        public Cart Cart { get; set; }
+        public Cart Cart { get; set; } = new Cart();
 
         public string DeliveryAddress { get; set; } = string.Empty;
 

@@ -14,5 +14,5 @@ public class Category
 
     public Product Product { get; set; }
 
-    public List<Property> Properties { get; set; }  
+    public List<Property> Properties { get; set; } = [];
 }

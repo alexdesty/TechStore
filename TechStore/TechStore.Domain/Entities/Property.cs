@@ -14,5 +14,7 @@ public class Property
 
     public string Type { get; set; } = string.Empty;
 
-    public List<Category> Categories { get; set; }
+    public List<Category> Categories { get; set; } = [];
+
+    public List<ProductToProperty> ProductsToProperties { get; set; } = [];
 }

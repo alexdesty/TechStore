@@ -7,12 +7,19 @@ using Microsoft.EntityFrameworkCore;
 
 namespace TechStore.Domain.Entities;
 
-[Keyless]
 public class ProductToProperty
 {
-    public List<Product> Products { get; set; }
+    public int Id { get; set; } 
 
-    public List<Property> Properties { get; set; }
+    public int ProductId { get; set; }
+
+    public Product Product { get; set; }
+
+    public Property Property { get; set; }
+
+    public int PropertyId { get; set; }
 
     public string Value { get; set; } = string.Empty;
+
+
 }

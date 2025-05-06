@@ -11,8 +11,8 @@ using TechStore.DAL.Data;
 namespace TechStore.DAL.Migrations
 {
     [DbContext(typeof(TechStoreDbContext))]
-    [Migration("20250505203748_Init")]
-    partial class Init
+    [Migration("20250506181618_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -47,18 +47,13 @@ namespace TechStore.DAL.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("CartItemId")
-                        .HasColumnType("int");
+                    b.Property<bool>("IsPurchased")
+                        .HasColumnType("bit");
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
-                    b.Property<bool>("isPurchased")
-                        .HasColumnType("bit");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("CartItemId");
 
                     b.HasIndex("UserId");
 
@@ -76,7 +71,17 @@ namespace TechStore.DAL.Migrations
                     b.Property<int>("Amount")
                         .HasColumnType("int");
 
+                    b.Property<int>("CartId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("CartId");
+
+                    b.HasIndex("ProductId");
 
                     b.ToTable("CartItems");
                 });
@@ -139,8 +144,7 @@ namespace TechStore.DAL.Migrations
 
                     b.HasIndex("ShopAddressId");
 
-                    b.HasIndex("UserId")
-                        .IsUnique();
+                    b.HasIndex("UserId");
 
                     b.ToTable("Orders");
                 });
@@ -152,9 +156,6 @@ namespace TechStore.DAL.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int?>("CartItemId")
-                        .HasColumnType("int");
 
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
@@ -176,8 +177,6 @@ namespace TechStore.DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CartItemId");
-
                     b.HasIndex("CategoryId")
                         .IsUnique();
 
@@ -186,9 +185,27 @@ namespace TechStore.DAL.Migrations
 
             modelBuilder.Entity("TechStore.Domain.Entities.ProductToProperty", b =>
                 {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PropertyId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Value")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.HasIndex("PropertyId");
 
                     b.ToTable("ProductsToProperties");
                 });
@@ -284,10 +301,6 @@ namespace TechStore.DAL.Migrations
 
             modelBuilder.Entity("TechStore.Domain.Entities.Cart", b =>
                 {
-                    b.HasOne("TechStore.Domain.Entities.CartItem", null)
-                        .WithMany("Carts")
-                        .HasForeignKey("CartItemId");
-
                     b.HasOne("TechStore.Domain.Entities.User", "User")
                         .WithMany("Carts")
                         .HasForeignKey("UserId")
@@ -295,6 +308,25 @@ namespace TechStore.DAL.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("TechStore.Domain.Entities.CartItem", b =>
+                {
+                    b.HasOne("TechStore.Domain.Entities.Cart", "Cart")
+                        .WithMany("Items")
+                        .HasForeignKey("CartId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("TechStore.Domain.Entities.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Cart");
+
+                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("TechStore.Domain.Entities.Order", b =>
@@ -306,13 +338,13 @@ namespace TechStore.DAL.Migrations
                         .IsRequired();
 
                     b.HasOne("TechStore.Domain.Entities.ShopAddress", "ShopAddress")
-                        .WithMany()
+                        .WithMany("Orders")
                         .HasForeignKey("ShopAddressId");
 
                     b.HasOne("TechStore.Domain.Entities.User", "User")
-                        .WithOne("Order")
-                        .HasForeignKey("TechStore.Domain.Entities.Order", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .WithMany("Orders")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Cart");
@@ -324,10 +356,6 @@ namespace TechStore.DAL.Migrations
 
             modelBuilder.Entity("TechStore.Domain.Entities.Product", b =>
                 {
-                    b.HasOne("TechStore.Domain.Entities.CartItem", null)
-                        .WithMany("Products")
-                        .HasForeignKey("CartItemId");
-
                     b.HasOne("TechStore.Domain.Entities.Category", null)
                         .WithOne("Product")
                         .HasForeignKey("TechStore.Domain.Entities.Product", "CategoryId")
@@ -335,17 +363,31 @@ namespace TechStore.DAL.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("TechStore.Domain.Entities.Cart", b =>
+            modelBuilder.Entity("TechStore.Domain.Entities.ProductToProperty", b =>
                 {
-                    b.Navigation("Order")
+                    b.HasOne("TechStore.Domain.Entities.Product", "Product")
+                        .WithMany("ProductsToProperties")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("TechStore.Domain.Entities.Property", "Property")
+                        .WithMany("ProductsToProperties")
+                        .HasForeignKey("PropertyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+
+                    b.Navigation("Property");
                 });
 
-            modelBuilder.Entity("TechStore.Domain.Entities.CartItem", b =>
+            modelBuilder.Entity("TechStore.Domain.Entities.Cart", b =>
                 {
-                    b.Navigation("Carts");
+                    b.Navigation("Items");
 
-                    b.Navigation("Products");
+                    b.Navigation("Order")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("TechStore.Domain.Entities.Category", b =>
@@ -354,12 +396,26 @@ namespace TechStore.DAL.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("TechStore.Domain.Entities.Product", b =>
+                {
+                    b.Navigation("ProductsToProperties");
+                });
+
+            modelBuilder.Entity("TechStore.Domain.Entities.Property", b =>
+                {
+                    b.Navigation("ProductsToProperties");
+                });
+
+            modelBuilder.Entity("TechStore.Domain.Entities.ShopAddress", b =>
+                {
+                    b.Navigation("Orders");
+                });
+
             modelBuilder.Entity("TechStore.Domain.Entities.User", b =>
                 {
                     b.Navigation("Carts");
 
-                    b.Navigation("Order")
-                        .IsRequired();
+                    b.Navigation("Orders");
                 });
 #pragma warning restore 612, 618
         }

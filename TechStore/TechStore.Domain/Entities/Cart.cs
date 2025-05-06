@@ -12,11 +12,12 @@ public class Cart
 
     public int UserId { get; set; }
 
-    public bool isPurchased { get; set; }
+    public bool IsPurchased { get; set; }
 
     public User User { get; set; }
 
     public Order Order { get; set; }
 
+    public List<CartItem> Items { get; set; } = [];
 
 }
