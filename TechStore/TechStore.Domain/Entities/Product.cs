@@ -12,15 +12,15 @@ public class Product
 
     public string Name { get; set; } = string.Empty;
 
-    public double Price { get; set; }
+    public decimal Price { get; set; }
 
-    public string Photo {  get; set; } = string.Empty;
+    public byte[]? Photo {  get; set; } 
 
     public string Description { get; set; } = string.Empty;
 
     public int CategoryId { get; set; }
 
-    Category Category { get; set; }
+    public Category Category { get; set; }
 
     public List<ProductToProperty> ProductsToProperties { get; set; } = [];
 }

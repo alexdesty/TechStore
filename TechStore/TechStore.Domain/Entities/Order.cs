@@ -13,13 +13,13 @@ namespace TechStore.Domain.Entities
         public int Id { get; set; }
 
         [DeleteBehavior(DeleteBehavior.NoAction)]
-        public User User { get; set; }  = new User();
+        public User User { get; set; }  
 
         public int UserId { get; set; }
 
         public int CartId { get; set; }
 
-        public Cart Cart { get; set; } = new Cart();
+        public Cart Cart { get; set; } 
 
         public string DeliveryAddress { get; set; } = string.Empty;
 
@@ -29,9 +29,11 @@ namespace TechStore.Domain.Entities
 
         public ShopAddress? ShopAddress { get; set; }
 
-        public string DeliveryPhoneNumber { get; set; } = string.Empty;
+        public string DeliveryPhoneNumber { get; set; } 
 
         public DeliveryStatus DeliveryStatus { get; set; }
+
+        public DateTime OrderDate {  get; set; } = DateTime.Now;
 
     }
 }

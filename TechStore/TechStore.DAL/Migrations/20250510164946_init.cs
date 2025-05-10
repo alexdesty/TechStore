@@ -1,6 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
+
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
 
 namespace TechStore.DAL.Migrations
 {
@@ -16,7 +19,7 @@ namespace TechStore.DAL.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Name = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -29,7 +32,7 @@ namespace TechStore.DAL.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Type = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
@@ -43,7 +46,7 @@ namespace TechStore.DAL.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Address = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Address = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -58,8 +61,8 @@ namespace TechStore.DAL.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Surname = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Login = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Login = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Role = table.Column<int>(type: "int", nullable: false)
                 },
@@ -74,9 +77,9 @@ namespace TechStore.DAL.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Price = table.Column<double>(type: "float", nullable: false),
-                    Photo = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Price = table.Column<decimal>(type: "decimal(10,2)", precision: 10, scale: 2, nullable: false),
+                    Photo = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CategoryId = table.Column<int>(type: "int", nullable: false)
                 },
@@ -95,21 +98,21 @@ namespace TechStore.DAL.Migrations
                 name: "CategoryProperty",
                 columns: table => new
                 {
-                    CategoriesId = table.Column<int>(type: "int", nullable: false),
-                    PropertiesId = table.Column<int>(type: "int", nullable: false)
+                    CategoryId = table.Column<int>(type: "int", nullable: false),
+                    PropertyId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CategoryProperty", x => new { x.CategoriesId, x.PropertiesId });
+                    table.PrimaryKey("PK_CategoryProperty", x => new { x.CategoryId, x.PropertyId });
                     table.ForeignKey(
-                        name: "FK_CategoryProperty_Categories_CategoriesId",
-                        column: x => x.CategoriesId,
+                        name: "FK_CategoryProperty_Categories_CategoryId",
+                        column: x => x.CategoryId,
                         principalTable: "Categories",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_CategoryProperty_Properties_PropertiesId",
-                        column: x => x.PropertiesId,
+                        name: "FK_CategoryProperty_Properties_PropertyId",
+                        column: x => x.PropertyId,
                         principalTable: "Properties",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -202,7 +205,8 @@ namespace TechStore.DAL.Migrations
                     ShopAddrressId = table.Column<int>(type: "int", nullable: true),
                     ShopAddressId = table.Column<int>(type: "int", nullable: true),
                     DeliveryPhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    DeliveryStatus = table.Column<int>(type: "int", nullable: false)
+                    DeliveryStatus = table.Column<int>(type: "int", nullable: false),
+                    OrderDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -225,6 +229,94 @@ namespace TechStore.DAL.Migrations
                         principalColumn: "Id");
                 });
 
+            migrationBuilder.InsertData(
+                table: "Categories",
+                columns: new[] { "Id", "Name" },
+                values: new object[,]
+                {
+                    { 1, "Phones" },
+                    { 2, "Laptops" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Properties",
+                columns: new[] { "Id", "Name", "Type" },
+                values: new object[,]
+                {
+                    { 1, "RAM", "Gb" },
+                    { 2, "ROM", "Gb" },
+                    { 3, "Screen resolution", "px" },
+                    { 4, "Length", "mm" },
+                    { 5, "Width", "mm" },
+                    { 6, "Height", "mm" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "ShopAddresses",
+                columns: new[] { "Id", "Address" },
+                values: new object[,]
+                {
+                    { 1, "Minsk, Independence avenue, 1" },
+                    { 2, "Minsk, International street, 1" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Users",
+                columns: new[] { "Id", "Email", "Login", "Name", "Password", "Role", "Surname" },
+                values: new object[,]
+                {
+                    { 1, "emailadmin@mail.com", "admin", "Admin", "pass9393", 1, "Admin" },
+                    { 2, "emailmanager@mail.com", "manager", "Manager", "pass8787", 2, "Manager" },
+                    { 3, "emailuser@mail.com", "user", "User", "pass7373", 3, "Manager" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "CategoryProperty",
+                columns: new[] { "CategoryId", "PropertyId" },
+                values: new object[,]
+                {
+                    { 1, 1 },
+                    { 1, 2 },
+                    { 1, 3 },
+                    { 1, 4 },
+                    { 1, 5 },
+                    { 1, 6 },
+                    { 2, 1 },
+                    { 2, 2 },
+                    { 2, 3 },
+                    { 2, 4 },
+                    { 2, 5 },
+                    { 2, 6 }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Products",
+                columns: new[] { "Id", "CategoryId", "Description", "Name", "Photo", "Price" },
+                values: new object[,]
+                {
+                    { 1, 1, "Nice phone", "Iphone 14 Pro Max", null, 999m },
+                    { 2, 2, "Nice laptop", "Apple MacBook Pro 16.2 M3 Pro", null, 3000m }
+                });
+
+            migrationBuilder.InsertData(
+                table: "ProductsToProperties",
+                columns: new[] { "Id", "ProductId", "PropertyId", "Value" },
+                values: new object[,]
+                {
+                    { 1, 1, 1, "6" },
+                    { 2, 1, 2, "128" },
+                    { 3, 1, 3, "1290x2796" },
+                    { 4, 1, 4, "160,7" },
+                    { 5, 1, 5, "77,6" },
+                    { 6, 1, 6, "7,85" },
+                    { 7, 2, 1, "18" },
+                    { 8, 2, 2, "512" },
+                    { 9, 2, 3, "3456x2234" },
+                    { 10, 2, 4, "355,7" },
+                    { 11, 2, 5, "248,1" },
+                    { 12, 2, 6, "16,8" }
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_CartItems_CartId",
                 table: "CartItems",
@@ -241,9 +333,15 @@ namespace TechStore.DAL.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CategoryProperty_PropertiesId",
+                name: "IX_Categories_Name",
+                table: "Categories",
+                column: "Name",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CategoryProperty_PropertyId",
                 table: "CategoryProperty",
-                column: "PropertiesId");
+                column: "PropertyId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Orders_CartId",
@@ -268,6 +366,12 @@ namespace TechStore.DAL.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_Products_Name",
+                table: "Products",
+                column: "Name",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ProductsToProperties_ProductId",
                 table: "ProductsToProperties",
                 column: "ProductId");
@@ -276,6 +380,30 @@ namespace TechStore.DAL.Migrations
                 name: "IX_ProductsToProperties_PropertyId",
                 table: "ProductsToProperties",
                 column: "PropertyId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Properties_Name",
+                table: "Properties",
+                column: "Name",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ShopAddresses_Address",
+                table: "ShopAddresses",
+                column: "Address",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_Email",
+                table: "Users",
+                column: "Email",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_Login",
+                table: "Users",
+                column: "Login",
+                unique: true);
         }
 
         /// <inheritdoc />
