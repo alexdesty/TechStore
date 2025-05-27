@@ -7,11 +7,8 @@ using System.Threading.Tasks;
 
 namespace TechStore.Domain.Entities;
 
-public class CartItem
-{
-    [Key]
-    public int Id { get; set; }    
-
+public class CartItem:Entity
+{ 
     public int ProductId { get; set; }
 
     public Product Product { get; set; }

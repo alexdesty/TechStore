@@ -12,7 +12,7 @@ using TechStore.DAL.Data;
 namespace TechStore.DAL.Migrations
 {
     [DbContext(typeof(TechStoreDbContext))]
-    [Migration("20250510164946_init")]
+    [Migration("20250526174250_init")]
     partial class init
     {
         /// <inheritdoc />

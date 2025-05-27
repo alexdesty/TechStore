@@ -8,11 +8,8 @@ using System.Threading.Tasks;
 
 namespace TechStore.Domain.Entities;
 
-public class Category
+public class Category:Entity
 {
-    [Key]
-    public int Id { get; set; }
-
     public string Name { get; set; } = string.Empty;
 
     public Product Product { get; set; }

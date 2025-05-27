@@ -8,11 +8,8 @@ using System.Threading.Tasks;
 
 namespace TechStore.Domain.Entities;
 
-public class Property
+public class Property:Entity
 {
-    [Key]
-    public int Id { get; set; } 
-
     public string Name { get; set; } = string.Empty;
 
     public string Type { get; set; } = string.Empty;
