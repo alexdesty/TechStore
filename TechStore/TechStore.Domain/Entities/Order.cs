@@ -8,9 +8,8 @@ using TechStore.Domain.Enums;
 
 namespace TechStore.Domain.Entities
 {
-    public class Order
+    public class Order:Entity
     {
-        public int Id { get; set; }
 
         [DeleteBehavior(DeleteBehavior.NoAction)]
         public User User { get; set; }  

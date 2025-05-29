@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using TechStore.DAL.Data;
+using TechStore.DAL.UnitOfWork;
+using TechStore.Domain.Interfaces.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +12,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 Registrator.RegisterServices(builder.Services, builder.Configuration);
+
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 var app = builder.Build();
 

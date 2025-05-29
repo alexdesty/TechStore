@@ -6,10 +6,8 @@ using System.Threading.Tasks;
 
 namespace TechStore.Domain.Entities;
 
-public class Cart
+public class Cart:Entity
 {
-    public int Id { get; set; }
-
     public int UserId { get; set; }
 
     public bool IsPurchased { get; set; }

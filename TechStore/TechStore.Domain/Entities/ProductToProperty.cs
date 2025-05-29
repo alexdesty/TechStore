@@ -7,10 +7,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace TechStore.Domain.Entities;
 
-public class ProductToProperty
+public class ProductToProperty:Entity
 {
-    public int Id { get; set; } 
-
     public int ProductId { get; set; }
 
     public Product Product { get; set; }
