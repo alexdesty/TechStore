@@ -10,13 +10,12 @@ using TechStore.Domain.Interfaces.Repositories;
 
 namespace TechStore.DAL.Repositories;
 
-public class BaseRepository<T>(TechStoreDbContext context) : IBaseRepository<T> where T : Entity
+internal class BaseRepository<T>(TechStoreDbContext context) : IBaseRepository<T> where T : Entity
 {
     public async Task<T> CreateAsync(T entity)
     {
 
-        context.Set<T>().Add(entity);
-        await context.SaveChangesAsync();
+        await context.Set<T>().AddAsync(entity);
         return entity;
     }
 
@@ -26,7 +25,7 @@ public class BaseRepository<T>(TechStoreDbContext context) : IBaseRepository<T> 
         if (entity != null)
         {
             context.Set<T>().Remove(entity);
-            return await context.SaveChangesAsync() > 0;
+            return true;
         }
         return false;
     }
@@ -41,10 +40,9 @@ public class BaseRepository<T>(TechStoreDbContext context) : IBaseRepository<T> 
             .FirstOrDefaultAsync(e => e.Id == id);
     }
 
-    public async Task<T> UpdateAsync(T entity)
+    public T Update(T entity)
     {
         context.Set<T>().Update(entity);
-        await context.SaveChangesAsync();
         return entity;
     }
 }
