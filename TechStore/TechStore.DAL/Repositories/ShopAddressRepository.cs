@@ -9,6 +9,6 @@ using TechStore.Domain.Interfaces.Repositories;
 
 namespace TechStore.DAL.Repositories;
 
-public class ShopAddressRepository(TechStoreDbContext context) : BaseRepository<ShopAddress>(context), IShopAddressRepository
+internal class ShopAddressRepository(TechStoreDbContext context) : BaseRepository<ShopAddress>(context), IShopAddressRepository
 {
 }

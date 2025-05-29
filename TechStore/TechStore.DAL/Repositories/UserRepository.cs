@@ -9,6 +9,6 @@ using TechStore.Domain.Interfaces.Repositories;
 
 namespace TechStore.DAL.Repositories;
 
-public class UserRepository(TechStoreDbContext context) : BaseRepository<User>(context), IUserRepository
+internal class UserRepository(TechStoreDbContext context) : BaseRepository<User>(context), IUserRepository
 {
 }
