@@ -22,8 +22,7 @@ public class UserService(IUnitOfWork unitOfWork):IUserService
     {
         var User = await unitOfWork.UserRepository.GetAsync(id) ?? throw new DomainException("User not found");
         var deleted = await unitOfWork.UserRepository.DeleteAsync(id);
-        await unitOfWork.SaveAsync();
-        return deleted;
+        return await unitOfWork.SaveAsync() > 0 ? deleted : throw new DomainException("User has not been deleted");
     }
 
     public async Task<IEnumerable<User>> GetAllAsync()

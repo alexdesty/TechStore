@@ -22,8 +22,7 @@ public class CartItemService(IUnitOfWork unitOfWork) : ICartItemService
     {
         var cartItem = await unitOfWork.CartItemRepository.GetAsync(id) ?? throw new DomainException("Product in cart not found");
         var deleted = await unitOfWork.CartItemRepository.DeleteAsync(id);
-        await unitOfWork.SaveAsync();
-        return deleted;
+        return await unitOfWork.SaveAsync() > 0 ? deleted : throw new DomainException("Product has not been deleted from the cart");
     }
 
     public async Task<IEnumerable<CartItem>> GetAllAsync()

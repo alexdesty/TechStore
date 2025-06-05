@@ -22,8 +22,7 @@ public class ShopAddressService(IUnitOfWork unitOfWork):IShopAddressService
     {
         var shopAddress = await unitOfWork.ShopAddressRepository.GetAsync(id) ?? throw new DomainException("Shop address not found");
         var deleted = await unitOfWork.ShopAddressRepository.DeleteAsync(id);
-        await unitOfWork.SaveAsync();
-        return deleted;
+        return await unitOfWork.SaveAsync() > 0 ? deleted : throw new DomainException("Shop address has not been deleted");
     }
 
     public async Task<IEnumerable<ShopAddress>> GetAllAsync()

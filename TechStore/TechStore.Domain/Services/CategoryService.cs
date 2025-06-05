@@ -22,8 +22,7 @@ public class CategoryService(IUnitOfWork unitOfWork):ICategoryService
     {
         var category = await unitOfWork.CategoryRepository.GetAsync(id) ?? throw new DomainException("Category not found");
         var deleted = await unitOfWork.CategoryRepository.DeleteAsync(id);
-        await unitOfWork.SaveAsync();
-        return deleted;
+        return await unitOfWork.SaveAsync() > 0 ? deleted : throw new DomainException("Category has not been deleted");
     }
 
     public async Task<IEnumerable<Category>> GetAllAsync()

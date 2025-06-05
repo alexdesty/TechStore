@@ -22,8 +22,7 @@ public class ProductService(IUnitOfWork unitOfWork):IProductService
     {
         var product = await unitOfWork.ProductRepository.GetAsync(id) ?? throw new DomainException("Product not found");
         var deleted = await unitOfWork.ProductRepository.DeleteAsync(id);
-        await unitOfWork.SaveAsync();
-        return deleted;
+        return await unitOfWork.SaveAsync() > 0 ? deleted : throw new DomainException("Product has not been deleted");
     }
 
     public async Task<IEnumerable<Product>> GetAllAsync()

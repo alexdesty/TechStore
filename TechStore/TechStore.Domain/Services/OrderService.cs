@@ -23,8 +23,7 @@ public class OrderService(IUnitOfWork unitOfWork) : IOrderService
     {
         var order = await unitOfWork.OrderRepository.GetAsync(id) ?? throw new DomainException("Order not found");
         var deleted = await unitOfWork.OrderRepository.DeleteAsync(id);
-        await unitOfWork.SaveAsync();
-        return deleted;
+        return await unitOfWork.SaveAsync() > 0 ? deleted : throw new DomainException("Order has not been deleted");
     }
 
     public async Task<IEnumerable<Order>> GetAllAsync()

@@ -22,8 +22,7 @@ public class PropertyService(IUnitOfWork unitOfWork):IPropertyService
     {
         var property = await unitOfWork.PropertyRepository.GetAsync(id) ?? throw new DomainException("Property not found");
         var deleted = await unitOfWork.PropertyRepository.DeleteAsync(id);
-        await unitOfWork.SaveAsync();
-        return deleted;
+        return await unitOfWork.SaveAsync() > 0 ? deleted : throw new DomainException("Property has not been deleted");
     }
 
     public async Task<IEnumerable<Property>> GetAllAsync()

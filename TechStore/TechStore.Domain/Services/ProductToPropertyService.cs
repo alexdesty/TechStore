@@ -22,8 +22,7 @@ public class ProductToPropertyService(IUnitOfWork unitOfWork):IProductToProperty
     {
         var productToProperty = await unitOfWork.ProductToPropertyRepository.GetAsync(id) ?? throw new DomainException("Product with this property not found");
         var deleted = await unitOfWork.ProductToPropertyRepository.DeleteAsync(id);
-        await unitOfWork.SaveAsync();
-        return deleted;
+        return await unitOfWork.SaveAsync() > 0 ? deleted : throw new DomainException("Property has not been deleted from product");
     }
 
     public async Task<IEnumerable<ProductToProperty>> GetAllAsync()
