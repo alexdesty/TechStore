@@ -12,24 +12,26 @@ namespace TechStore.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ShopAddressController(IShopAddressService shopAddressService, IValidator<ShopAddressDTO> shopAddressValidator, IMapper mapper) : ControllerBase
+    public class ShopAddressesController(IShopAddressService shopAddressService, IValidator<ShopAddressDTO> shopAddressValidator, IMapper mapper) : ControllerBase
     {
-        // GET: api/<ShopAddressController>
+        // GET: api/<ShopAddressesController>
         [HttpGet]
-        public async Task<IEnumerable<ShopAddress>> Get()
+        public async Task<ActionResult<IEnumerable<ShopAddress>>> Get()
         {
-            return await shopAddressService.GetAllAsync();
+            var snopAddresses = await shopAddressService.GetAllAsync();
+            return Ok(snopAddresses);
         }
 
-        // GET api/<ShopAddressController>/5
+        // GET api/<ShopAddressesController>/5
         [HttpGet("{id}")]
         public async Task<ActionResult> Get(int id)
         {
             var shopAddress = await shopAddressService.GetAsync(id);
-            return shopAddress == null ? NotFound() : Ok(shopAddress);
+            var shopAddressDTO = mapper.Map<ShopAddressDTO>(shopAddress);
+            return shopAddress == null ? NotFound() : Ok(shopAddressDTO);
         }
 
-        // POST api/<ShopAddressController>
+        // POST api/<ShopAddressesController>
         [HttpPost]
         public async Task<ActionResult> Post([FromBody] ShopAddressDTO shopAddress)
         {
@@ -40,10 +42,12 @@ namespace TechStore.Api.Controllers
             }
             var newShopAddress = mapper.Map<ShopAddress>(shopAddress);
             var created = await shopAddressService.CreateAsync(newShopAddress);
-            return Ok(created);
+            var shopAddressDTO = mapper.Map<ShopAddressDTO>(created);
+            var uri = new Uri($"api/shopaddresses/{created.Id}");
+            return Created(uri, created);
         }
 
-        // PUT api/<ShopAddressController>/5
+        // PUT api/<ShopAddressesController>/5
         [HttpPut("{id}")]
         public async Task<ActionResult> Put(int id, [FromBody] ShopAddressDTO shopAddress)
         {
@@ -55,10 +59,10 @@ namespace TechStore.Api.Controllers
                 var updated = await shopAddressService.UpdateAsync(edited);
                 return Ok(updated);
             }
-            return BadRequest();
+            return NotFound();
         }
 
-        // DELETE api/<ShopAddressController>/5
+        // DELETE api/<ShopAddressesController>/5
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(int id)
         {

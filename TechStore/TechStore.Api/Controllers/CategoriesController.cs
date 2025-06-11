@@ -12,24 +12,26 @@ namespace TechStore.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CategoryController(ICategoryService categoryService, IValidator<CategoryDTO> categoryValidator, IMapper mapper) : ControllerBase
+    public class CategoriesController(ICategoryService categoryService, IValidator<CategoryDTO> categoryValidator, IMapper mapper) : ControllerBase
     {
-        // GET: api/<CategoryController>
+        // GET: api/<CategoriesController>
         [HttpGet]
-        public async Task<IEnumerable<Category>> Get()
+        public async Task<ActionResult<IEnumerable<Category>>> Get()
         {
-            return await categoryService.GetAllAsync();
+            var categories  = await categoryService.GetAllAsync();
+            return Ok(categories);
         }
 
-        // GET api/<CategoryController>/5
+        // GET api/<CategoriesController>/5
         [HttpGet("{id}")]
         public async Task<ActionResult> Get(int id) 
         {
             var category = await categoryService.GetAsync(id);
-            return category == null ? NotFound() : Ok(category);
+            var categoryDTO = mapper.Map<CategoryDTO>(category);
+            return category == null ? NotFound() : Ok(categoryDTO);
         }
 
-        // POST api/<CategoryController>
+        // POST api/<CategoriesController>
         [HttpPost]
         public async Task<ActionResult> Post([FromBody] CategoryDTO category)
         {
@@ -40,10 +42,12 @@ namespace TechStore.Api.Controllers
             }
             var newCategory = mapper.Map<Category>(category);
             var created = await categoryService.CreateAsync(newCategory);
-            return Ok(created);
+            var categoryDTO = mapper.Map<CategoryDTO>(created);
+            var uri = new Uri ($"api/categories/{created.Id}");     
+            return Created(uri,created);
         }
 
-        // PUT api/<CategoryController>/5
+        // PUT api/<CategoriesController>/5
         [HttpPut("{id}")]
         public async Task<ActionResult> Put(int id, [FromBody] CategoryDTO category) 
         {
@@ -55,10 +59,10 @@ namespace TechStore.Api.Controllers
                 var updated = await categoryService.UpdateAsync(edited);
                 return Ok(updated);
             }
-            return BadRequest();
+            return NotFound();
         }
 
-        // DELETE api/<CategoryController>/5
+        // DELETE api/<CategoriesController>/5
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(int id)
         {
