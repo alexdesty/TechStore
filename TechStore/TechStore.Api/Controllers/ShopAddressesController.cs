@@ -19,7 +19,8 @@ namespace TechStore.Api.Controllers
         public async Task<ActionResult<IEnumerable<ShopAddress>>> Get()
         {
             var snopAddresses = await shopAddressService.GetAllAsync();
-            return Ok(snopAddresses);
+            var shopAddressesDTO = mapper.Map<ShopAddressDTO>(snopAddresses);
+            return Ok(shopAddressesDTO);
         }
 
         // GET api/<ShopAddressesController>/5
@@ -44,7 +45,7 @@ namespace TechStore.Api.Controllers
             var created = await shopAddressService.CreateAsync(newShopAddress);
             var shopAddressDTO = mapper.Map<ShopAddressDTO>(created);
             var uri = new Uri($"api/shopaddresses/{created.Id}");
-            return Created(uri, created);
+            return Created(uri, shopAddressDTO);
         }
 
         // PUT api/<ShopAddressesController>/5
@@ -52,12 +53,18 @@ namespace TechStore.Api.Controllers
         public async Task<ActionResult> Put(int id, [FromBody] ShopAddressDTO shopAddress)
         {
             var oldShopAddress = await shopAddressService.GetAsync(id);
+            var validationResult = shopAddressValidator.Validate(shopAddress);
+            if (!validationResult.IsValid)
+            {
+                return BadRequest(validationResult.Errors[0].ToString());
+            }
             if (oldShopAddress != null)
             {
                 ShopAddress edited = mapper.Map<ShopAddress>(shopAddress);
                 edited.Id = id;
                 var updated = await shopAddressService.UpdateAsync(edited);
-                return Ok(updated);
+                var shopAddressDTO = mapper.Map<CategoryDTO>(updated);
+                return Ok(shopAddressDTO);
             }
             return NotFound();
         }
@@ -67,7 +74,7 @@ namespace TechStore.Api.Controllers
         public async Task<ActionResult> Delete(int id)
         {
             var deleted = await shopAddressService.DeleteAsync(id);
-            return Ok(deleted);
+            return deleted == false ? BadRequest("Shop address is not deleted") : Ok(deleted);
         }
     }
 }

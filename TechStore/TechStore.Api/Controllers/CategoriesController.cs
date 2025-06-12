@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using FluentValidation;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using TechStore.Api.DTO;
 using TechStore.Api.DTOValidators;
@@ -19,7 +20,8 @@ namespace TechStore.Api.Controllers
         public async Task<ActionResult<IEnumerable<Category>>> Get()
         {
             var categories  = await categoryService.GetAllAsync();
-            return Ok(categories);
+            var categoriesDTO = mapper.Map<CategoryDTO>(categories);
+            return Ok(categoriesDTO);
         }
 
         // GET api/<CategoriesController>/5
@@ -44,7 +46,7 @@ namespace TechStore.Api.Controllers
             var created = await categoryService.CreateAsync(newCategory);
             var categoryDTO = mapper.Map<CategoryDTO>(created);
             var uri = new Uri ($"api/categories/{created.Id}");     
-            return Created(uri,created);
+            return Created(uri,categoryDTO);
         }
 
         // PUT api/<CategoriesController>/5
@@ -52,12 +54,18 @@ namespace TechStore.Api.Controllers
         public async Task<ActionResult> Put(int id, [FromBody] CategoryDTO category) 
         {
             var oldCategory = await categoryService.GetAsync(id);
+            var validationResult = categoryValidator.Validate(category);
+            if (!validationResult.IsValid)
+            {
+                return BadRequest(validationResult.Errors[0].ToString());
+            }
             if (oldCategory != null)
             {
                 Category edited = mapper.Map<Category>(category);
                 edited.Id = id;
                 var updated = await categoryService.UpdateAsync(edited);
-                return Ok(updated);
+                var categoryDTO = mapper.Map<CategoryDTO>(updated);
+                return Ok(categoryDTO);
             }
             return NotFound();
         }
@@ -67,7 +75,7 @@ namespace TechStore.Api.Controllers
         public async Task<ActionResult> Delete(int id)
         {
         var deleted = await categoryService.DeleteAsync(id);    
-            return Ok(deleted);
+            return deleted == false ? BadRequest("Category is not deleted") : Ok(deleted);
         }
     }
 }
