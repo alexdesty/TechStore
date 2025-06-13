@@ -17,11 +17,11 @@ namespace TechStore.Api.Controllers
     {
         // GET: api/<CategoriesController>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Category>>> Get()
+        public async Task<IActionResult> Get()
         {
             var categories  = await categoryService.GetAllAsync();
-            var categoriesDTO = mapper.Map<CategoryDTO>(categories);
-            return Ok(categoriesDTO);
+            var categoryDTO = mapper.Map<List<CategoryDTO>>(categories);
+            return Ok(categoryDTO);
         }
 
         // GET api/<CategoriesController>/5
@@ -45,25 +45,25 @@ namespace TechStore.Api.Controllers
             var newCategory = mapper.Map<Category>(category);
             var created = await categoryService.CreateAsync(newCategory);
             var categoryDTO = mapper.Map<CategoryDTO>(created);
-            var uri = new Uri ($"api/categories/{created.Id}");     
-            return Created(uri,categoryDTO);
+            return CreatedAtAction(nameof(Get), categoryDTO);
         }
 
         // PUT api/<CategoriesController>/5
         [HttpPut("{id}")]
         public async Task<ActionResult> Put(int id, [FromBody] CategoryDTO category) 
         {
-            var oldCategory = await categoryService.GetAsync(id);
+            
             var validationResult = categoryValidator.Validate(category);
             if (!validationResult.IsValid)
             {
                 return BadRequest(validationResult.Errors[0].ToString());
             }
+            var oldCategory = await categoryService.GetAsync(id);
             if (oldCategory != null)
             {
-                Category edited = mapper.Map<Category>(category);
-                edited.Id = id;
-                var updated = await categoryService.UpdateAsync(edited);
+                mapper.Map<CategoryDTO, Category>(category, oldCategory);
+                oldCategory.Id = id;
+                var updated = await categoryService.UpdateAsync(oldCategory);
                 var categoryDTO = mapper.Map<CategoryDTO>(updated);
                 return Ok(categoryDTO);
             }

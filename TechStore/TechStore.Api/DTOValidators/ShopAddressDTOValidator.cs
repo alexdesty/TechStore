@@ -1,11 +1,12 @@
 ﻿using FluentValidation;
 using TechStore.Api.DTO;
+using TechStore.Domain.Entities;
 
 namespace TechStore.Api.DTOValidators
 {
     public class ShopAddressDTOValidator : AbstractValidator<ShopAddressDTO>
     {
-        ShopAddressDTOValidator()
+        public ShopAddressDTOValidator()
         {
             RuleFor(x => x.Address)
                 .NotEmpty()

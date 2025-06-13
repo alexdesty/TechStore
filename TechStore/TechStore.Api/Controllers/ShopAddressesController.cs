@@ -16,10 +16,10 @@ namespace TechStore.Api.Controllers
     {
         // GET: api/<ShopAddressesController>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ShopAddress>>> Get()
+        public async Task<IActionResult> Get()
         {
             var snopAddresses = await shopAddressService.GetAllAsync();
-            var shopAddressesDTO = mapper.Map<ShopAddressDTO>(snopAddresses);
+            var shopAddressesDTO = mapper.Map<List<ShopAddressDTO>>(snopAddresses);
             return Ok(shopAddressesDTO);
         }
 
@@ -44,26 +44,25 @@ namespace TechStore.Api.Controllers
             var newShopAddress = mapper.Map<ShopAddress>(shopAddress);
             var created = await shopAddressService.CreateAsync(newShopAddress);
             var shopAddressDTO = mapper.Map<ShopAddressDTO>(created);
-            var uri = new Uri($"api/shopaddresses/{created.Id}");
-            return Created(uri, shopAddressDTO);
+            return CreatedAtAction(nameof(Get), shopAddressDTO);
         }
 
         // PUT api/<ShopAddressesController>/5
         [HttpPut("{id}")]
         public async Task<ActionResult> Put(int id, [FromBody] ShopAddressDTO shopAddress)
         {
-            var oldShopAddress = await shopAddressService.GetAsync(id);
             var validationResult = shopAddressValidator.Validate(shopAddress);
             if (!validationResult.IsValid)
             {
                 return BadRequest(validationResult.Errors[0].ToString());
             }
+            var oldShopAddress = await shopAddressService.GetAsync(id);
             if (oldShopAddress != null)
             {
-                ShopAddress edited = mapper.Map<ShopAddress>(shopAddress);
-                edited.Id = id;
-                var updated = await shopAddressService.UpdateAsync(edited);
-                var shopAddressDTO = mapper.Map<CategoryDTO>(updated);
+                mapper.Map<ShopAddressDTO, ShopAddress>(shopAddress, oldShopAddress);
+                oldShopAddress.Id = id;
+                var updated = await shopAddressService.UpdateAsync(oldShopAddress);
+                var shopAddressDTO = mapper.Map<ShopAddressDTO>(updated);
                 return Ok(shopAddressDTO);
             }
             return NotFound();

@@ -1,10 +1,11 @@
 ﻿using FluentValidation;
 using TechStore.Api.DTO;
+using TechStore.Domain.Entities;
 namespace TechStore.Api.DTOValidators;
 
 public class CategoryDTOValidator : AbstractValidator<CategoryDTO>
 {
-    CategoryDTOValidator()
+    public CategoryDTOValidator()
     {
         RuleFor(x => x.Name)
             .NotEmpty()
