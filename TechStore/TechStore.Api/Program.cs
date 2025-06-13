@@ -1,7 +1,15 @@
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
+using TechStore.Api;
+using TechStore.Api.DTO;
+using TechStore.Api.DTOValidators;
 using TechStore.DAL.Data;
+using TechStore.DAL.Repositories;
 using TechStore.DAL.UnitOfWork;
+using TechStore.Domain.Entities;
 using TechStore.Domain.Interfaces.Repositories;
+using TechStore.Domain.Interfaces.Services;
+using TechStore.Domain.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,9 +19,35 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
 Registrator.RegisterServices(builder.Services, builder.Configuration);
 
+builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<ICartItemService, CartItemService>();
+builder.Services.AddScoped<ICartService, CartService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<IProductToPropertyService, ProductToPropertyService>();
+builder.Services.AddScoped<IPropertyService, PropertyService>();
+builder.Services.AddScoped<IShopAddressService, ShopAddressService>();
+builder.Services.AddScoped<IUserService, UserService>();
+
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddScoped<IShopAddressRepository, ShopAddressRepository>();
+builder.Services.AddScoped<ICartItemRepository, CartItemRepository>();
+builder.Services.AddScoped<ICartRepository, CartRepository>();
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped<IProductToPropertyRepository, ProductToPropertyRepository>();
+builder.Services.AddScoped<IPropertyRepository, PropertyRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+builder.Services.AddScoped<IValidator<CategoryDTO>, CategoryDTOValidator>();
+builder.Services.AddScoped<IValidator<ShopAddressDTO>, ShopAddressDTOValidator>();
+
+builder.Services.AddAutoMapper(typeof(AutoMapperProfiles));
 
 var app = builder.Build();
 

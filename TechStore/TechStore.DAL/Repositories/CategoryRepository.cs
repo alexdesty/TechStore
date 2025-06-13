@@ -9,6 +9,6 @@ using TechStore.Domain.Interfaces.Repositories;
 
 namespace TechStore.DAL.Repositories;
 
-internal class CategoryRepository(TechStoreDbContext context) : BaseRepository<Category>(context), ICategoryRepository
+public class CategoryRepository(TechStoreDbContext context) : BaseRepository<Category>(context), ICategoryRepository
 {
 }

@@ -9,6 +9,6 @@ using TechStore.Domain.Interfaces.Repositories;
 
 namespace TechStore.DAL.Repositories;
 
-internal class CartRepository(TechStoreDbContext context) :BaseRepository<Cart>(context),ICartRepository   
+public class CartRepository(TechStoreDbContext context) :BaseRepository<Cart>(context),ICartRepository   
 {
 }

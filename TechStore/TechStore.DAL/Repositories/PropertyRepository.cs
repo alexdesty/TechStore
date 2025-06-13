@@ -9,6 +9,6 @@ using TechStore.Domain.Interfaces.Repositories;
 
 namespace TechStore.DAL.Repositories;
 
-internal class PropertyRepository(TechStoreDbContext context) : BaseRepository<Property>(context), IPropertyRepository
+public class PropertyRepository(TechStoreDbContext context) : BaseRepository<Property>(context), IPropertyRepository
 {
 }
