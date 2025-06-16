@@ -10,7 +10,7 @@ using TechStore.Domain.Interfaces.Repositories;
 
 namespace TechStore.DAL.Repositories;
 
-internal class BaseRepository<T>(TechStoreDbContext context) : IBaseRepository<T> where T : Entity
+public class BaseRepository<T>(TechStoreDbContext context) : IBaseRepository<T> where T : Entity
 {
     public async Task<T> CreateAsync(T entity)
     {

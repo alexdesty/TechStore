@@ -9,6 +9,6 @@ using TechStore.Domain.Interfaces.Repositories;
 
 namespace TechStore.DAL.Repositories;
 
-internal class OrderRepository(TechStoreDbContext context) : BaseRepository<Order>(context), IOrderRepository
+public class OrderRepository(TechStoreDbContext context) : BaseRepository<Order>(context), IOrderRepository
 {
 }
