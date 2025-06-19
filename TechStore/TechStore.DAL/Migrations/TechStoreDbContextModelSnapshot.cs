@@ -209,9 +209,6 @@ namespace TechStore.DAL.Migrations
                     b.Property<int?>("ShopAddressId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("ShopAddrressId")
-                        .HasColumnType("int");
-
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
@@ -255,8 +252,7 @@ namespace TechStore.DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CategoryId")
-                        .IsUnique();
+                    b.HasIndex("CategoryId");
 
                     b.HasIndex("Name")
                         .IsUnique();

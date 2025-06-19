@@ -202,7 +202,6 @@ namespace TechStore.DAL.Migrations
                     CartId = table.Column<int>(type: "int", nullable: false),
                     DeliveryAddress = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     DeliveryType = table.Column<bool>(type: "bit", nullable: false),
-                    ShopAddrressId = table.Column<int>(type: "int", nullable: true),
                     ShopAddressId = table.Column<int>(type: "int", nullable: true),
                     DeliveryPhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     DeliveryStatus = table.Column<int>(type: "int", nullable: false),
@@ -362,8 +361,7 @@ namespace TechStore.DAL.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Products_CategoryId",
                 table: "Products",
-                column: "CategoryId",
-                unique: true);
+                column: "CategoryId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Products_Name",

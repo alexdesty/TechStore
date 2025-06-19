@@ -46,6 +46,13 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 builder.Services.AddScoped<IValidator<CategoryDTO>, CategoryDTOValidator>();
 builder.Services.AddScoped<IValidator<ShopAddressDTO>, ShopAddressDTOValidator>();
+builder.Services.AddScoped<IValidator<PropertyDTO>, PropertyDTOValidator>();
+builder.Services.AddScoped<IValidator<ProductDTO>, ProductDTOValidator>();
+builder.Services.AddScoped<IValidator<UserDTO>, UserDTOValidator>();
+builder.Services.AddScoped<IValidator<ProductToPropertyDTO>, ProductToPropertyDTOValidator>();
+builder.Services.AddScoped<IValidator<CartDTO>, CartDTOValidator>();
+builder.Services.AddScoped<IValidator<CartItemDTO>, CartItemDTOValidator>();
+builder.Services.AddScoped<IValidator<OrderDTO>, OrderDTOValidator>();
 
 builder.Services.AddAutoMapper(typeof(AutoMapperProfiles));
 

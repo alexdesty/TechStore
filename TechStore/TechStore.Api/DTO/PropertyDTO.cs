@@ -2,11 +2,14 @@
 
 namespace TechStore.Api.DTO;
 
-public class CategoryDTO
+public class PropertyDTO
 {
     public int Id { get; set; }
 
     [Required]
     public string Name { get; set; } = string.Empty;
+
+    public string Type { get; set; } = string.Empty;
+
 
 }

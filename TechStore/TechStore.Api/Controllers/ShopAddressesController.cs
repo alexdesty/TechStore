@@ -8,72 +8,71 @@ using TechStore.Domain.Services;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
-namespace TechStore.Api.Controllers
+namespace TechStore.Api.Controllers;
+
+[Route("api/[controller]")]
+[ApiController]
+public class ShopAddressesController(IShopAddressService shopAddressService, IValidator<ShopAddressDTO> shopAddressValidator, IMapper mapper) : ControllerBase
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class ShopAddressesController(IShopAddressService shopAddressService, IValidator<ShopAddressDTO> shopAddressValidator, IMapper mapper) : ControllerBase
+    // GET: api/<ShopAddressesController>
+    [HttpGet]
+    public async Task<IActionResult> Get()
     {
-        // GET: api/<ShopAddressesController>
-        [HttpGet]
-        public async Task<IActionResult> Get()
-        {
-            var snopAddresses = await shopAddressService.GetAllAsync();
-            var shopAddressesDTO = mapper.Map<List<ShopAddressDTO>>(snopAddresses);
-            return Ok(shopAddressesDTO);
-        }
+        var snopAddresses = await shopAddressService.GetAllAsync();
+        var shopAddressesDTO = mapper.Map<List<ShopAddressDTO>>(snopAddresses);
+        return Ok(shopAddressesDTO);
+    }
 
-        // GET api/<ShopAddressesController>/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult> Get(int id)
-        {
-            var shopAddress = await shopAddressService.GetAsync(id);
-            var shopAddressDTO = mapper.Map<ShopAddressDTO>(shopAddress);
-            return shopAddress == null ? NotFound() : Ok(shopAddressDTO);
-        }
+    // GET api/<ShopAddressesController>/5
+    [HttpGet("{id}")]
+    public async Task<ActionResult> Get(int id)
+    {
+        var shopAddress = await shopAddressService.GetAsync(id);
+        var shopAddressDTO = mapper.Map<ShopAddressDTO>(shopAddress);
+        return shopAddress == null ? NotFound() : Ok(shopAddressDTO);
+    }
 
-        // POST api/<ShopAddressesController>
-        [HttpPost]
-        public async Task<ActionResult> Post([FromBody] ShopAddressDTO shopAddress)
+    // POST api/<ShopAddressesController>
+    [HttpPost]
+    public async Task<ActionResult> Post([FromBody] ShopAddressDTO shopAddress)
+    {
+        var validationResult = shopAddressValidator.Validate(shopAddress);
+        if (!validationResult.IsValid)
         {
-            var validationResult = shopAddressValidator.Validate(shopAddress);
-            if (!validationResult.IsValid)
-            {
-                return BadRequest(validationResult.Errors[0].ToString());
-            }
-            var newShopAddress = mapper.Map<ShopAddress>(shopAddress);
-            var created = await shopAddressService.CreateAsync(newShopAddress);
-            var shopAddressDTO = mapper.Map<ShopAddressDTO>(created);
-            return CreatedAtAction(nameof(Get), shopAddressDTO);
+            return BadRequest(validationResult.Errors[0].ToString());
         }
+        var newShopAddress = mapper.Map<ShopAddress>(shopAddress);
+        var created = await shopAddressService.CreateAsync(newShopAddress);
+        var shopAddressDTO = mapper.Map<ShopAddressDTO>(created);
+        return CreatedAtAction(nameof(Get), shopAddressDTO);
+    }
 
-        // PUT api/<ShopAddressesController>/5
-        [HttpPut("{id}")]
-        public async Task<ActionResult> Put(int id, [FromBody] ShopAddressDTO shopAddress)
+    // PUT api/<ShopAddressesController>/5
+    [HttpPut("{id}")]
+    public async Task<ActionResult> Put(int id, [FromBody] ShopAddressDTO shopAddress)
+    {
+        var validationResult = shopAddressValidator.Validate(shopAddress);
+        if (!validationResult.IsValid)
         {
-            var validationResult = shopAddressValidator.Validate(shopAddress);
-            if (!validationResult.IsValid)
-            {
-                return BadRequest(validationResult.Errors[0].ToString());
-            }
-            var oldShopAddress = await shopAddressService.GetAsync(id);
-            if (oldShopAddress != null)
-            {
-                mapper.Map<ShopAddressDTO, ShopAddress>(shopAddress, oldShopAddress);
-                oldShopAddress.Id = id;
-                var updated = await shopAddressService.UpdateAsync(oldShopAddress);
-                var shopAddressDTO = mapper.Map<ShopAddressDTO>(updated);
-                return Ok(shopAddressDTO);
-            }
-            return NotFound();
+            return BadRequest(validationResult.Errors[0].ToString());
         }
+        var oldShopAddress = await shopAddressService.GetAsync(id);
+        if (oldShopAddress != null)
+        {
+            mapper.Map<ShopAddressDTO, ShopAddress>(shopAddress, oldShopAddress);
+            oldShopAddress.Id = id;
+            var updated = await shopAddressService.UpdateAsync(oldShopAddress);
+            var shopAddressDTO = mapper.Map<ShopAddressDTO>(updated);
+            return Ok(shopAddressDTO);
+        }
+        return NotFound();
+    }
 
-        // DELETE api/<ShopAddressesController>/5
-        [HttpDelete("{id}")]
-        public async Task<ActionResult> Delete(int id)
-        {
-            var deleted = await shopAddressService.DeleteAsync(id);
-            return deleted == false ? BadRequest("Shop address is not deleted") : Ok(deleted);
-        }
+    // DELETE api/<ShopAddressesController>/5
+    [HttpDelete("{id}")]
+    public async Task<ActionResult> Delete(int id)
+    {
+        var deleted = await shopAddressService.DeleteAsync(id);
+        return deleted == false ? BadRequest("Shop address is not deleted") : Ok(deleted);
     }
 }
