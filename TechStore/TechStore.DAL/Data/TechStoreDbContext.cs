@@ -26,10 +26,6 @@ public class TechStoreDbContext(DbContextOptions<TechStoreDbContext> options) : 
 
     public DbSet<CartItem> CartItems { get; set; }
 
-    public DbSet<ProductToProperty> ProductsToProperties { get; set; }
-
-    public DbSet<Property> Properties { get; set; }
-
     public DbSet<ShopAddress> ShopAddresses { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -43,7 +39,7 @@ public class TechStoreDbContext(DbContextOptions<TechStoreDbContext> options) : 
         modelBuilder.Entity<Product>().HasIndex(p => p.CategoryId).IsUnique(false);
         modelBuilder.Entity<Order>().HasIndex(p => p.ShopAddressId).IsUnique(false);
         modelBuilder.Entity<ShopAddress>().HasIndex(s => s.Address).IsUnique();
-        modelBuilder.Entity<Property>().HasIndex(p => p.Name).IsUnique();
+
 
         modelBuilder.Entity<Product>().Property(p => p.Price).HasPrecision(10, 2);
 
@@ -100,43 +96,6 @@ public class TechStoreDbContext(DbContextOptions<TechStoreDbContext> options) : 
             Name = "Laptops"
         });
 
-        modelBuilder.Entity<Property>().HasData(new Property()
-        {
-            Id = 1,
-            Name = "RAM",
-            Type = "Gb"
-        });
-        modelBuilder.Entity<Property>().HasData(new Property()
-        {
-            Id = 2,
-            Name = "ROM",
-            Type = "Gb"
-        });
-        modelBuilder.Entity<Property>().HasData(new Property()
-        {
-            Id = 3,
-            Name = "Screen resolution",
-            Type = "px"
-        });
-        modelBuilder.Entity<Property>().HasData(new Property()
-        {
-            Id = 4,
-            Name = "Length",
-            Type = "mm"
-        });
-        modelBuilder.Entity<Property>().HasData(new Property()
-        {
-            Id = 5,
-            Name = "Width",
-            Type = "mm"
-        });
-        modelBuilder.Entity<Property>().HasData(new Property()
-        {
-            Id = 6,
-            Name = "Height",
-            Type = "mm"
-        });
-
         modelBuilder.Entity<Product>().HasData(new Product()
         {
             Id = 1,
@@ -153,119 +112,5 @@ public class TechStoreDbContext(DbContextOptions<TechStoreDbContext> options) : 
             Description = "Nice laptop",
             CategoryId = 2,
         });
-
-        modelBuilder.Entity<ProductToProperty>().HasData(new ProductToProperty()
-        {
-            Id = 1,
-            ProductId = 1,
-            PropertyId = 1,
-            Value = "6"
-        });
-        modelBuilder.Entity<ProductToProperty>().HasData(new ProductToProperty()
-        {
-            Id = 2,
-            ProductId = 1,
-            PropertyId = 2,
-            Value = "128"
-        });
-        modelBuilder.Entity<ProductToProperty>().HasData(new ProductToProperty()
-        {
-            Id = 3,
-            ProductId = 1,
-            PropertyId = 3,
-            Value = "1290x2796"
-        });
-        modelBuilder.Entity<ProductToProperty>().HasData(new ProductToProperty()
-        {
-            Id = 4,
-            ProductId = 1,
-            PropertyId = 4,
-            Value = "160,7"
-        });
-        modelBuilder.Entity<ProductToProperty>().HasData(new ProductToProperty()
-        {
-            Id = 5,
-            ProductId = 1,
-            PropertyId = 5,
-            Value = "77,6"
-        });
-        modelBuilder.Entity<ProductToProperty>().HasData(new ProductToProperty()
-        {
-            Id = 6,
-            ProductId = 1,
-            PropertyId = 6,
-            Value = "7,85"
-        });
-        modelBuilder.Entity<ProductToProperty>().HasData(new ProductToProperty()
-        {
-            Id = 7,
-            ProductId = 2,
-            PropertyId = 1,
-            Value = "18"
-        });
-        modelBuilder.Entity<ProductToProperty>().HasData(new ProductToProperty()
-        {
-            Id = 8,
-            ProductId = 2,
-            PropertyId = 2,
-            Value = "512"
-        });
-        modelBuilder.Entity<ProductToProperty>().HasData(new ProductToProperty()
-        {
-            Id = 9,
-            ProductId = 2,
-            PropertyId = 3,
-            Value = "3456x2234"
-        });
-        modelBuilder.Entity<ProductToProperty>().HasData(new ProductToProperty()
-        {
-            Id = 10,
-            ProductId = 2,
-            PropertyId = 4,
-            Value = "355,7"
-        });
-        modelBuilder.Entity<ProductToProperty>().HasData(new ProductToProperty()
-        {
-            Id = 11,
-            ProductId = 2,
-            PropertyId = 5,
-            Value = "248,1"
-        });
-        modelBuilder.Entity<ProductToProperty>().HasData(new ProductToProperty()
-        {
-            Id = 12,
-            ProductId = 2,
-            PropertyId = 6,
-            Value = "16,8"
-        });
-
-        modelBuilder.Entity<Category>()
-    .HasMany(c => c.Properties)
-    .WithMany(p => p.Categories)
-    .UsingEntity<Dictionary<string, object>>(
-        "CategoryProperty",
-        j => j.HasOne<Property>().WithMany().HasForeignKey("PropertyId")
-            .HasConstraintName("FK_CategoryProperty_Properties_PropertyId"),
-        j => j.HasOne<Category>().WithMany().HasForeignKey("CategoryId")
-            .HasConstraintName("FK_CategoryProperty_Categories_CategoryId"),
-        j =>
-        {
-            j.HasKey("CategoryId", "PropertyId");
-            j.HasData(
-                new { CategoryId = 1, PropertyId = 1 },
-                new { CategoryId = 1, PropertyId = 2 },
-                new { CategoryId = 1, PropertyId = 3 },
-                new { CategoryId = 1, PropertyId = 4 },
-                new { CategoryId = 1, PropertyId = 5 },
-                new { CategoryId = 1, PropertyId = 6 },
-                new { CategoryId = 2, PropertyId = 1 },
-                new { CategoryId = 2, PropertyId = 2 },
-                new { CategoryId = 2, PropertyId = 3 },
-                new { CategoryId = 2, PropertyId = 4 },
-                new { CategoryId = 2, PropertyId = 5 },
-                new { CategoryId = 2, PropertyId = 6 }
-            );
-        }
-    );
     }
 }

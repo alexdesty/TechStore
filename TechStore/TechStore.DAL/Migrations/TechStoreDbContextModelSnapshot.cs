@@ -22,83 +22,6 @@ namespace TechStore.DAL.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("CategoryProperty", b =>
-                {
-                    b.Property<int>("CategoryId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("PropertyId")
-                        .HasColumnType("int");
-
-                    b.HasKey("CategoryId", "PropertyId");
-
-                    b.HasIndex("PropertyId");
-
-                    b.ToTable("CategoryProperty");
-
-                    b.HasData(
-                        new
-                        {
-                            CategoryId = 1,
-                            PropertyId = 1
-                        },
-                        new
-                        {
-                            CategoryId = 1,
-                            PropertyId = 2
-                        },
-                        new
-                        {
-                            CategoryId = 1,
-                            PropertyId = 3
-                        },
-                        new
-                        {
-                            CategoryId = 1,
-                            PropertyId = 4
-                        },
-                        new
-                        {
-                            CategoryId = 1,
-                            PropertyId = 5
-                        },
-                        new
-                        {
-                            CategoryId = 1,
-                            PropertyId = 6
-                        },
-                        new
-                        {
-                            CategoryId = 2,
-                            PropertyId = 1
-                        },
-                        new
-                        {
-                            CategoryId = 2,
-                            PropertyId = 2
-                        },
-                        new
-                        {
-                            CategoryId = 2,
-                            PropertyId = 3
-                        },
-                        new
-                        {
-                            CategoryId = 2,
-                            PropertyId = 4
-                        },
-                        new
-                        {
-                            CategoryId = 2,
-                            PropertyId = 5
-                        },
-                        new
-                        {
-                            CategoryId = 2,
-                            PropertyId = 6
-                        });
-                });
-
             modelBuilder.Entity("TechStore.Domain.Entities.Cart", b =>
                 {
                     b.Property<int>("Id")
@@ -278,181 +201,6 @@ namespace TechStore.DAL.Migrations
                         });
                 });
 
-            modelBuilder.Entity("TechStore.Domain.Entities.ProductToProperty", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("PropertyId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Value")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProductId");
-
-                    b.HasIndex("PropertyId");
-
-                    b.ToTable("ProductsToProperties");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            ProductId = 1,
-                            PropertyId = 1,
-                            Value = "6"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            ProductId = 1,
-                            PropertyId = 2,
-                            Value = "128"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            ProductId = 1,
-                            PropertyId = 3,
-                            Value = "1290x2796"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            ProductId = 1,
-                            PropertyId = 4,
-                            Value = "160,7"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            ProductId = 1,
-                            PropertyId = 5,
-                            Value = "77,6"
-                        },
-                        new
-                        {
-                            Id = 6,
-                            ProductId = 1,
-                            PropertyId = 6,
-                            Value = "7,85"
-                        },
-                        new
-                        {
-                            Id = 7,
-                            ProductId = 2,
-                            PropertyId = 1,
-                            Value = "18"
-                        },
-                        new
-                        {
-                            Id = 8,
-                            ProductId = 2,
-                            PropertyId = 2,
-                            Value = "512"
-                        },
-                        new
-                        {
-                            Id = 9,
-                            ProductId = 2,
-                            PropertyId = 3,
-                            Value = "3456x2234"
-                        },
-                        new
-                        {
-                            Id = 10,
-                            ProductId = 2,
-                            PropertyId = 4,
-                            Value = "355,7"
-                        },
-                        new
-                        {
-                            Id = 11,
-                            ProductId = 2,
-                            PropertyId = 5,
-                            Value = "248,1"
-                        },
-                        new
-                        {
-                            Id = 12,
-                            ProductId = 2,
-                            PropertyId = 6,
-                            Value = "16,8"
-                        });
-                });
-
-            modelBuilder.Entity("TechStore.Domain.Entities.Property", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Type")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Name")
-                        .IsUnique();
-
-                    b.ToTable("Properties");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Name = "RAM",
-                            Type = "Gb"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Name = "ROM",
-                            Type = "Gb"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Name = "Screen resolution",
-                            Type = "px"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Name = "Length",
-                            Type = "mm"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            Name = "Width",
-                            Type = "mm"
-                        },
-                        new
-                        {
-                            Id = 6,
-                            Name = "Height",
-                            Type = "mm"
-                        });
-                });
-
             modelBuilder.Entity("TechStore.Domain.Entities.ShopAddress", b =>
                 {
                     b.Property<int>("Id")
@@ -559,23 +307,6 @@ namespace TechStore.DAL.Migrations
                         });
                 });
 
-            modelBuilder.Entity("CategoryProperty", b =>
-                {
-                    b.HasOne("TechStore.Domain.Entities.Category", null)
-                        .WithMany()
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("FK_CategoryProperty_Categories_CategoryId");
-
-                    b.HasOne("TechStore.Domain.Entities.Property", null)
-                        .WithMany()
-                        .HasForeignKey("PropertyId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("FK_CategoryProperty_Properties_PropertyId");
-                });
-
             modelBuilder.Entity("TechStore.Domain.Entities.Cart", b =>
                 {
                     b.HasOne("TechStore.Domain.Entities.User", "User")
@@ -642,25 +373,6 @@ namespace TechStore.DAL.Migrations
                     b.Navigation("Category");
                 });
 
-            modelBuilder.Entity("TechStore.Domain.Entities.ProductToProperty", b =>
-                {
-                    b.HasOne("TechStore.Domain.Entities.Product", "Product")
-                        .WithMany("ProductsToProperties")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("TechStore.Domain.Entities.Property", "Property")
-                        .WithMany("ProductsToProperties")
-                        .HasForeignKey("PropertyId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Product");
-
-                    b.Navigation("Property");
-                });
-
             modelBuilder.Entity("TechStore.Domain.Entities.Cart", b =>
                 {
                     b.Navigation("Items");
@@ -673,16 +385,6 @@ namespace TechStore.DAL.Migrations
                 {
                     b.Navigation("Product")
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("TechStore.Domain.Entities.Product", b =>
-                {
-                    b.Navigation("ProductsToProperties");
-                });
-
-            modelBuilder.Entity("TechStore.Domain.Entities.Property", b =>
-                {
-                    b.Navigation("ProductsToProperties");
                 });
 
             modelBuilder.Entity("TechStore.Domain.Entities.ShopAddress", b =>

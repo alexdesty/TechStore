@@ -17,8 +17,6 @@ public class UnitOfWork : IDisposable, IUnitOfWork
     private ICategoryRepository? categoryRepository;
     private IOrderRepository? orderRepository;
     private IProductRepository? productRepository;
-    private IPropertyRepository? propertyRepository;
-    private IProductToPropertyRepository productToPropertyRepository;
     private IShopAddressRepository? shopAddressRepository;
     private IUserRepository? userRepository;
 
@@ -84,30 +82,6 @@ public class UnitOfWork : IDisposable, IUnitOfWork
                 this.productRepository = new ProductRepository(_context);
             }
             return productRepository;
-        }
-    }
-
-    public IPropertyRepository PropertyRepository
-    {
-        get
-        {
-            if (this.propertyRepository == null)
-            {
-                this.propertyRepository = new PropertyRepository(_context);
-            }
-            return propertyRepository;
-        }
-    }
-
-    public IProductToPropertyRepository ProductToPropertyRepository
-    {
-        get
-        {
-            if (this.productToPropertyRepository == null)
-            {
-                this.productToPropertyRepository = new ProductToPropertyRepository(_context);
-            }
-            return productToPropertyRepository;
         }
     }
 

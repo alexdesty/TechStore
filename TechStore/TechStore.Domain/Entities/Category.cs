@@ -14,6 +14,5 @@ public class Category:Entity
 
     public Product Product { get; set; }
 
-    public List<Property> Properties { get; set; } = [];
 
 }

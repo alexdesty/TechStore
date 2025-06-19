@@ -12,9 +12,7 @@ public interface IUnitOfWork
     ICartRepository CartRepository { get; } 
     ICategoryRepository CategoryRepository { get; }
     IOrderRepository OrderRepository { get; }
-    IProductRepository ProductRepository { get; }
-    IPropertyRepository PropertyRepository { get; }
-    IProductToPropertyRepository ProductToPropertyRepository { get; }   
+    IProductRepository ProductRepository { get; } 
     IShopAddressRepository ShopAddressRepository { get; }
     IUserRepository UserRepository { get; }
     Task<int> SaveAsync();

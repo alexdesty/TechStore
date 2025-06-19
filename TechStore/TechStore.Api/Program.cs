@@ -27,8 +27,6 @@ builder.Services.AddScoped<ICartItemService, CartItemService>();
 builder.Services.AddScoped<ICartService, CartService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IProductService, ProductService>();
-builder.Services.AddScoped<IProductToPropertyService, ProductToPropertyService>();
-builder.Services.AddScoped<IPropertyService, PropertyService>();
 builder.Services.AddScoped<IShopAddressService, ShopAddressService>();
 builder.Services.AddScoped<IUserService, UserService>();
 
@@ -38,18 +36,14 @@ builder.Services.AddScoped<ICartItemRepository, CartItemRepository>();
 builder.Services.AddScoped<ICartRepository, CartRepository>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
-builder.Services.AddScoped<IProductToPropertyRepository, ProductToPropertyRepository>();
-builder.Services.AddScoped<IPropertyRepository, PropertyRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 builder.Services.AddScoped<IValidator<CategoryDTO>, CategoryDTOValidator>();
 builder.Services.AddScoped<IValidator<ShopAddressDTO>, ShopAddressDTOValidator>();
-builder.Services.AddScoped<IValidator<PropertyDTO>, PropertyDTOValidator>();
 builder.Services.AddScoped<IValidator<ProductDTO>, ProductDTOValidator>();
 builder.Services.AddScoped<IValidator<UserDTO>, UserDTOValidator>();
-builder.Services.AddScoped<IValidator<ProductToPropertyDTO>, ProductToPropertyDTOValidator>();
 builder.Services.AddScoped<IValidator<CartDTO>, CartDTOValidator>();
 builder.Services.AddScoped<IValidator<CartItemDTO>, CartItemDTOValidator>();
 builder.Services.AddScoped<IValidator<OrderDTO>, OrderDTOValidator>();
