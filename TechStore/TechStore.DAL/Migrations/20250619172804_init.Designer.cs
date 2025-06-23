@@ -12,7 +12,7 @@ using TechStore.DAL.Data;
 namespace TechStore.DAL.Migrations
 {
     [DbContext(typeof(TechStoreDbContext))]
-    [Migration("20250619170953_init")]
+    [Migration("20250619172804_init")]
     partial class init
     {
         /// <inheritdoc />
@@ -140,8 +140,7 @@ namespace TechStore.DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CartId")
-                        .IsUnique();
+                    b.HasIndex("CartId");
 
                     b.HasIndex("ShopAddressId");
 

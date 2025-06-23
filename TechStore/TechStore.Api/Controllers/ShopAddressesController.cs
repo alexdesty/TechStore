@@ -28,8 +28,12 @@ public class ShopAddressesController(IShopAddressService shopAddressService, IVa
     public async Task<ActionResult> Get(int id)
     {
         var shopAddress = await shopAddressService.GetAsync(id);
+        if (shopAddress == null)
+        {
+            return NotFound();
+        }
         var shopAddressDTO = mapper.Map<ShopAddressDTO>(shopAddress);
-        return shopAddress == null ? NotFound() : Ok(shopAddressDTO);
+        return Ok(shopAddressDTO);
     }
 
     // POST api/<ShopAddressesController>

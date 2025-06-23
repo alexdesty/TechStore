@@ -14,4 +14,6 @@ public interface ICartItemService
     Task<bool> DeleteAsync(int id);
     Task<CartItem?> GetAsync(int id);
     Task<IEnumerable<CartItem>> GetAllAsync();
+
+    Task<List<CartItem>> GetItemsByCartIdAsync(int id);
 }

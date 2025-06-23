@@ -27,8 +27,13 @@ public class ProductsController(IProductService productService, IValidator<Produ
     public async Task<ActionResult> Get(int id)
     {
         var product = await productService.GetAsync(id);
+        if (product == null)
+        {
+            return NotFound();
+        }
+
         var productDTO = mapper.Map<ProductDTO>(product);
-        return product == null ? NotFound() : Ok(productDTO);
+        return Ok(productDTO);
     }
 
     // POST api/<ProductsController>

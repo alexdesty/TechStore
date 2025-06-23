@@ -38,6 +38,7 @@ public class TechStoreDbContext(DbContextOptions<TechStoreDbContext> options) : 
         modelBuilder.Entity<Product>().HasIndex(p => p.Name).IsUnique();
         modelBuilder.Entity<Product>().HasIndex(p => p.CategoryId).IsUnique(false);
         modelBuilder.Entity<Order>().HasIndex(p => p.ShopAddressId).IsUnique(false);
+        modelBuilder.Entity<Order>().HasIndex(p => p.CartId).IsUnique(false);
         modelBuilder.Entity<ShopAddress>().HasIndex(s => s.Address).IsUnique();
 
 

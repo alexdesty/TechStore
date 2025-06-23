@@ -27,8 +27,12 @@ public class UsersController(IUserService userService, IValidator<UserDTO> userV
     public async Task<ActionResult> Get(int id)
     {
         var user = await userService.GetAsync(id);
+        if (user == null)
+        {
+            return NotFound();
+        }
         var userDTO = mapper.Map<UserDTO>(user);
-        return user == null ? NotFound() : Ok(userDTO);
+        return Ok(userDTO);
     }
 
     // POST api/<UsersController>

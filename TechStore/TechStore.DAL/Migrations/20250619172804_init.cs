@@ -224,8 +224,7 @@ namespace TechStore.DAL.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Orders_CartId",
                 table: "Orders",
-                column: "CartId",
-                unique: true);
+                column: "CartId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Orders_ShopAddressId",

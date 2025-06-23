@@ -26,8 +26,12 @@ public class OrdersController(IOrderService orderService, IValidator<OrderDTO> o
     public async Task<ActionResult> Get(int id)
     {
         var order = await orderService.GetAsync(id);
+        if (order == null)
+        {
+            return NotFound();
+        }
         var orderDTO = mapper.Map<OrderDTO>(order);
-        return order == null ? NotFound() : Ok(orderDTO);
+        return Ok(orderDTO);
     }
 
     // POST api/<OrdersController>

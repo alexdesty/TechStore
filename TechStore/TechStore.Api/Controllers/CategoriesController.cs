@@ -29,8 +29,12 @@ public class CategoriesController(ICategoryService categoryService, IValidator<C
     public async Task<ActionResult> Get(int id) 
     {
         var category = await categoryService.GetAsync(id);
+        if (category == null)
+        {
+            return NotFound();
+        }
         var categoryDTO = mapper.Map<CategoryDTO>(category);
-        return category == null ? NotFound() : Ok(categoryDTO);
+        return Ok(categoryDTO);
     }
 
     // POST api/<CategoriesController>

@@ -35,10 +35,16 @@ public class CartItemService(IUnitOfWork unitOfWork) : ICartItemService
         return await unitOfWork.CartItemRepository.GetAsync(id);
     }
 
+    public async Task<List<CartItem>> GetItemsByCartIdAsync(int id)
+    {
+        return await unitOfWork.CartItemRepository.GetItemsByCartIdAsync(id);
+    }
+
     public async Task<CartItem> UpdateAsync(CartItem cartItem)
     {
         var updatedCartItem = unitOfWork.CartItemRepository.Update(cartItem);
         return await unitOfWork.SaveAsync() > 0 ? cartItem
             : throw new DomainException("Item in cart not updated");
     }
+
 }
