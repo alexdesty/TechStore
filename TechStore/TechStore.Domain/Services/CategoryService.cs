@@ -7,6 +7,7 @@ using TechStore.Domain.Entities;
 using TechStore.Domain.Exceptions;
 using TechStore.Domain.Interfaces.Repositories;
 using TechStore.Domain.Interfaces.Services;
+using TechStore.Domain.Pagination;
 
 namespace TechStore.Domain.Services;
 
@@ -25,9 +26,10 @@ public class CategoryService(IUnitOfWork unitOfWork):ICategoryService
         return await unitOfWork.SaveAsync() > 0 ? deleted : throw new DomainException("Category has not been deleted");
     }
 
-    public async Task<IEnumerable<Category>> GetAllAsync()
+    public async Task<PaginatedList<Category>> GetAllAsync(int pageIndex, int pageSize)
     {
-        return await unitOfWork.CategoryRepository.GetAllAsync();
+        var items = await unitOfWork.CategoryRepository.GetAllAsync(pageIndex, pageSize);
+        return items;
     }
 
     public async Task<Category?> GetAsync(int id)

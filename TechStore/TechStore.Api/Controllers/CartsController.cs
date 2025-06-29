@@ -1,9 +1,12 @@
 ﻿using AutoMapper;
 using FluentValidation;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using TechStore.Api.DTO;
+using TechStore.Api.DTOValidators;
 using TechStore.Domain.Entities;
 using TechStore.Domain.Interfaces.Services;
+using TechStore.Domain.Pagination;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -11,21 +14,21 @@ namespace TechStore.Api.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class CartsController(ICartService cartService, IValidator<CartDTO> CartValidator, IMapper mapper, ICartItemService cartItemService, IValidator<CartItemDTO> cartItemValidator) : ControllerBase
+public class CartsController(ICartService cartService, ICartItemService cartItemService, IValidator<CartDTO> cartValidator, IValidator<CartItemDTO> cartItemValidator, IValidator<CartItemToCreateDTO> cartItemToCreateDTOValidator, IMapper mapper) : ControllerBase
 {
     // GET: api/<CartsController>
-
     [HttpGet]
-    public async Task<IActionResult> GetCarts()
+    public async Task<ActionResult<PaginatedList<CartDTO>>> Get(int pageIndex = 1, int pageSize = 5)
     {
-        var carts = await cartService.GetAllAsync();
+        var carts = await cartService.GetAllAsync(pageIndex, pageSize);
         var cartDTO = mapper.Map<List<CartDTO>>(carts);
-        return Ok(cartDTO);
+        var pagedDTO = new PaginatedList<CartDTO>(cartDTO, pageIndex, pageSize);
+        return Ok(pagedDTO);
     }
 
     // GET api/<CartsController>/5
     [HttpGet("{id}")]
-    public async Task<ActionResult> GetCart(int id)
+    public async Task<ActionResult> Get(int id)
     {
         var cart = await cartService.GetAsync(id);
         if (cart == null)
@@ -40,7 +43,7 @@ public class CartsController(ICartService cartService, IValidator<CartDTO> CartV
     [HttpPost]
     public async Task<ActionResult> Post([FromBody] CartDTO cart)
     {
-        var validationResult = CartValidator.Validate(cart);
+        var validationResult = cartValidator.Validate(cart);
         if (!validationResult.IsValid)
         {
             return BadRequest(validationResult.Errors[0].ToString());
@@ -48,15 +51,14 @@ public class CartsController(ICartService cartService, IValidator<CartDTO> CartV
         var newCart = mapper.Map<Cart>(cart);
         var created = await cartService.CreateAsync(newCart);
         var cartDTO = mapper.Map<CartDTO>(created);
-        return CreatedAtAction(nameof(GetCarts), cartDTO);
+        return CreatedAtAction(nameof(Get), cartDTO);
     }
 
     // PUT api/<CartsController>/5
     [HttpPut("{id}")]
-    public async Task<ActionResult> PutCart(int id, [FromBody] CartDTO cart)
+    public async Task<ActionResult> Put(int id, [FromBody] CartDTO cart)
     {
-
-        var validationResult = CartValidator.Validate(cart);
+        var validationResult = cartValidator.Validate(cart);
         if (!validationResult.IsValid)
         {
             return BadRequest(validationResult.Errors[0].ToString());
@@ -75,25 +77,16 @@ public class CartsController(ICartService cartService, IValidator<CartDTO> CartV
 
     // DELETE api/<CartsController>/5
     [HttpDelete("{id}")]
-    public async Task<ActionResult> DeleteCart(int id)
+    public async Task<ActionResult> Delete(int id)
     {
         var deleted = await cartService.DeleteAsync(id);
-        return deleted == false ? BadRequest("Cart is not deleted") : Ok(deleted);
+        return !deleted ? BadRequest("Cart is not deleted") : Ok(deleted);
     }
 
-    [Route("/cartitems")]
-    [HttpGet]
-    public async Task<IActionResult> GetAllCartItems()
+    [HttpGet("{cartId}/cartitems")]
+    public async Task<IActionResult> GetItemsByCartId(int cartId)
     {
-        var cartItems = await cartItemService.GetAllAsync();
-        var cartItemsDTO = mapper.Map<List<CartItemDTO>>(cartItems);
-        return Ok(cartItemsDTO);
-    }
-
-    [HttpGet("{id}/cartitems")]
-    public async Task<IActionResult> GetItemsByCartId(int id)
-    {
-        var cartItems = await cartItemService.GetItemsByCartIdAsync(id);
+        var cartItems = await cartItemService.GetItemsByCartIdAsync(cartId);
         if (cartItems == null)
         {
             return NotFound();
@@ -101,35 +94,32 @@ public class CartsController(ICartService cartService, IValidator<CartDTO> CartV
         var cartItemsDTO = mapper.Map<List<CartItemDTO>>(cartItems);
         return Ok(cartItemsDTO);
     }
-    [Route("/cartitems")]
+
+    [Route("{cartId}/cartitems")]
     [HttpPost]
-    public async Task<ActionResult> PostCartItems([FromBody] CartItemDTO cartItem)
+    public async Task<ActionResult> PostCartItems([FromBody] CartItemToCreateDTO cartItem, int cartId)
     {
-        var validationResult = cartItemValidator.Validate(cartItem);
-        if (!validationResult.IsValid)
-        {
-            return BadRequest(validationResult.Errors[0].ToString());
-        }
         var newCartItem = mapper.Map<CartItem>(cartItem);
+        newCartItem.CartId = cartId;
         var created = await cartItemService.CreateAsync(newCartItem);
         var cartItemDTO = mapper.Map<CartItemDTO>(created);
-        return CreatedAtAction(nameof(GetAllCartItems), cartItemDTO);
+        return CreatedAtAction(nameof(Get), cartItemDTO);
     }
 
-    [HttpPut("cartitems/{id}")]
-    public async Task<ActionResult> PutCartItems(int id, [FromBody] CartItemDTO cartItem)
+    [HttpPut("{cartId}/cartitems/{cartItemId}")]
+    public async Task<ActionResult> PutCartItems(int cartId, int cartItemId, [FromBody] CartItemToCreateDTO cartItem)
     {
-
-        var validationResult = cartItemValidator.Validate(cartItem);
+        var validationResult = cartItemToCreateDTOValidator.Validate(cartItem);
         if (!validationResult.IsValid)
         {
             return BadRequest(validationResult.Errors[0].ToString());
         }
-        var oldCartItem = await cartItemService.GetAsync(id);
+        var oldCartItem = await cartItemService.GetAsync(cartItemId);
         if (oldCartItem != null)
         {
-            mapper.Map<CartItemDTO, CartItem>(cartItem, oldCartItem);
-            oldCartItem.Id = id;
+            mapper.Map<CartItemToCreateDTO, CartItem>(cartItem, oldCartItem);
+            oldCartItem.Id = cartItemId;
+            oldCartItem.CartId = cartId;
             var updated = await cartItemService.UpdateAsync(oldCartItem);
             var cartItemDTO = mapper.Map<CartItemDTO>(updated);
             return Ok(cartItemDTO);
@@ -137,10 +127,10 @@ public class CartsController(ICartService cartService, IValidator<CartDTO> CartV
         return NotFound();
     }
 
-    [HttpDelete("cartitems/{id}")]
-    public async Task<ActionResult> DeleteCartItems(int id)
+    [HttpDelete("{cartId}/cartitems")]
+    public async Task<ActionResult> DeleteCartItemsByCardId(int cartId)
     {
-        var deleted = await cartItemService.DeleteAsync(id);
-        return deleted == false ? BadRequest("Cart with items is not deleted") : Ok(deleted);
+        var deleted = await cartItemService.DeleteCartItemsByCartId(cartId);
+        return !deleted ? BadRequest("Cart with items is not deleted") : Ok(deleted);
     }
 }

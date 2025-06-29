@@ -1,9 +1,12 @@
 ﻿using AutoMapper;
 using FluentValidation;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using TechStore.Api.DTO;
+using TechStore.Api.DTOValidators;
 using TechStore.Domain.Entities;
 using TechStore.Domain.Interfaces.Services;
+using TechStore.Domain.Pagination;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -15,11 +18,12 @@ public class ProductsController(IProductService productService, IValidator<Produ
 {
     // GET: api/<ProductsController>
     [HttpGet]
-    public async Task<IActionResult> Get()
+    public async Task<ActionResult<PaginatedList<ProductDTO>>> Get(int pageIndex = 1, int pageSize = 1)
     {
-        var products = await productService.GetAllAsync();
+        var products = await productService.GetAllAsync(pageIndex, pageSize);
         var productDTO = mapper.Map<List<ProductDTO>>(products);
-        return Ok(productDTO);
+        var pagedDTO = new PaginatedList<ProductDTO>(productDTO, pageIndex, pageSize);
+        return Ok(pagedDTO);
     }
 
     // GET api/<ProductsController>/5
@@ -31,7 +35,6 @@ public class ProductsController(IProductService productService, IValidator<Produ
         {
             return NotFound();
         }
-
         var productDTO = mapper.Map<ProductDTO>(product);
         return Ok(productDTO);
     }
@@ -78,6 +81,6 @@ public class ProductsController(IProductService productService, IValidator<Produ
     public async Task<ActionResult> Delete(int id)
     {
         var deleted = await productService.DeleteAsync(id);
-        return deleted == false ? BadRequest("Product is not deleted") : Ok(deleted);
+        return !deleted ? BadRequest("Product is not deleted") : Ok(deleted);
     }
 }

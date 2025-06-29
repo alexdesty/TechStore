@@ -47,7 +47,7 @@ builder.Services.AddScoped<IValidator<UserDTO>, UserDTOValidator>();
 builder.Services.AddScoped<IValidator<CartDTO>, CartDTOValidator>();
 builder.Services.AddScoped<IValidator<CartItemDTO>, CartItemDTOValidator>();
 builder.Services.AddScoped<IValidator<OrderDTO>, OrderDTOValidator>();
-
+builder.Services.AddScoped<IValidator<CartItemToCreateDTO>, CartItemToCreateDTOValidator>();
 builder.Services.AddAutoMapper(typeof(AutoMapperProfiles));
 
 var app = builder.Build();

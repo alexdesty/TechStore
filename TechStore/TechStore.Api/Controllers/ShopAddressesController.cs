@@ -1,10 +1,12 @@
 ﻿using AutoMapper;
 using FluentValidation;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using TechStore.Api.DTO;
+using TechStore.Api.DTOValidators;
 using TechStore.Domain.Entities;
 using TechStore.Domain.Interfaces.Services;
-using TechStore.Domain.Services;
+using TechStore.Domain.Pagination;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -16,11 +18,12 @@ public class ShopAddressesController(IShopAddressService shopAddressService, IVa
 {
     // GET: api/<ShopAddressesController>
     [HttpGet]
-    public async Task<IActionResult> Get()
+    public async Task<ActionResult<PaginatedList<ShopAddressDTO>>> Get(int pageIndex = 1, int pageSize = 1)
     {
-        var snopAddresses = await shopAddressService.GetAllAsync();
-        var shopAddressesDTO = mapper.Map<List<ShopAddressDTO>>(snopAddresses);
-        return Ok(shopAddressesDTO);
+        var shopAddresses = await shopAddressService.GetAllAsync(pageIndex, pageSize);
+        var shopAddressDTO = mapper.Map<List<ShopAddressDTO>>(shopAddresses);
+        var pagedDTO = new PaginatedList<ShopAddressDTO>(shopAddressDTO, pageIndex, pageSize);
+        return Ok(pagedDTO);
     }
 
     // GET api/<ShopAddressesController>/5
@@ -55,6 +58,7 @@ public class ShopAddressesController(IShopAddressService shopAddressService, IVa
     [HttpPut("{id}")]
     public async Task<ActionResult> Put(int id, [FromBody] ShopAddressDTO shopAddress)
     {
+
         var validationResult = shopAddressValidator.Validate(shopAddress);
         if (!validationResult.IsValid)
         {
@@ -77,6 +81,6 @@ public class ShopAddressesController(IShopAddressService shopAddressService, IVa
     public async Task<ActionResult> Delete(int id)
     {
         var deleted = await shopAddressService.DeleteAsync(id);
-        return deleted == false ? BadRequest("Shop address is not deleted") : Ok(deleted);
+        return !deleted ? BadRequest("Shop address is not deleted") : Ok(deleted);
     }
 }

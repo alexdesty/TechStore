@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Fabric.Query;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -7,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using TechStore.DAL.Data;
 using TechStore.Domain.Entities;
 using TechStore.Domain.Interfaces.Repositories;
+using TechStore.Domain.Pagination;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace TechStore.DAL.Repositories;
 
@@ -30,10 +33,18 @@ public class BaseRepository<T>(TechStoreDbContext context) : IBaseRepository<T> 
         return false;
     }
 
-    public async Task<List<T?>> GetAllAsync()
+    public async Task<PaginatedList<T>> GetAllAsync(int pageIndex, int pageSize)
     {
-        return await context.Set<T>().ToListAsync();
+        var items = await context.Set<T>()
+            .OrderBy(b=>b.Id)
+            .Skip((pageIndex - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+       var count = await context.Set<T>().CountAsync();
+        var totalPages = (int)Math.Ceiling(count/(double)pageSize);
+        return new PaginatedList<T>(items, pageIndex, totalPages);
     }
+
     public async Task<T?> GetAsync(int id)
     {
         return await context.Set<T>()

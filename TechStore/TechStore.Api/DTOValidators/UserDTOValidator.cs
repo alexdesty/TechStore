@@ -35,10 +35,10 @@ public class UserDTOValidator : AbstractValidator<UserDTO>
             .Length(2, 50)
             .WithMessage("Login must be between 2 and 50 characters");
 
-        RuleFor(x=>x.Password)
+        RuleFor(x => x.Password)
             .NotEmpty()
             .WithMessage("Password is required")
             .Length(2, 50)
-            .WithMessage("Password must be between 2 and 50 characters");   
+            .WithMessage("Password must be between 2 and 50 characters");
     }
 }

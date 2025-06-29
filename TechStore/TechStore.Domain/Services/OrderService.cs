@@ -8,6 +8,7 @@ using TechStore.Domain.Enums;
 using TechStore.Domain.Exceptions;
 using TechStore.Domain.Interfaces.Repositories;
 using TechStore.Domain.Interfaces.Services;
+using TechStore.Domain.Pagination;
 
 namespace TechStore.Domain.Services;
 
@@ -26,9 +27,10 @@ public class OrderService(IUnitOfWork unitOfWork) : IOrderService
         return await unitOfWork.SaveAsync() > 0 ? deleted : throw new DomainException("Order has not been deleted");
     }
 
-    public async Task<IEnumerable<Order>> GetAllAsync()
+    public async Task<PaginatedList<Order>> GetAllAsync(int pageIndex, int pageSize)
     {
-        return await unitOfWork.OrderRepository.GetAllAsync();
+        var items = await unitOfWork.OrderRepository.GetAllAsync(pageIndex, pageSize);
+        return items;
     }
 
     public async Task<Order?> GetAsync(int id)
@@ -36,17 +38,17 @@ public class OrderService(IUnitOfWork unitOfWork) : IOrderService
         return await unitOfWork.OrderRepository.GetAsync(id);
     }
 
-    public async Task<Order> SetDeliveryStatus(Order order, DeliveryStatus deliveryStatus)
-    {
-        order.DeliveryStatus = deliveryStatus;
-        return await unitOfWork.SaveAsync() > 0 ? order
-     : throw new DomainException("Delivery status has not been set");
-    }
-
     public async Task<Order> UpdateAsync(Order order)
     {
         var updatedOrder = unitOfWork.OrderRepository.Update(order);
         return await unitOfWork.SaveAsync() > 0 ? order
             : throw new DomainException("Order has not been updated");
+    }
+
+    public async Task<Order> SetDeliveryStatus(Order order, DeliveryStatus deliveryStatus)
+    {
+        order.DeliveryStatus = deliveryStatus;
+        return await unitOfWork.SaveAsync() > 0 ? order
+     : throw new DomainException("Delivery status has not been set");
     }
 }

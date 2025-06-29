@@ -6,6 +6,7 @@ using TechStore.Api.DTO;
 using TechStore.Api.DTOValidators;
 using TechStore.Domain.Entities;
 using TechStore.Domain.Interfaces.Services;
+using TechStore.Domain.Pagination;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -17,16 +18,17 @@ public class CategoriesController(ICategoryService categoryService, IValidator<C
 {
     // GET: api/<CategoriesController>
     [HttpGet]
-    public async Task<IActionResult> Get()
+    public async Task<ActionResult<PaginatedList<CategoryDTO>>> Get(int pageIndex = 1, int pageSize = 1)
     {
-        var categories  = await categoryService.GetAllAsync();
+        var categories = await categoryService.GetAllAsync(pageIndex, pageSize);
         var categoryDTO = mapper.Map<List<CategoryDTO>>(categories);
-        return Ok(categoryDTO);
+        var pagedDTO = new PaginatedList<CategoryDTO>(categoryDTO, pageIndex, pageSize);
+        return Ok(pagedDTO);
     }
 
     // GET api/<CategoriesController>/5
     [HttpGet("{id}")]
-    public async Task<ActionResult> Get(int id) 
+    public async Task<ActionResult> Get(int id)
     {
         var category = await categoryService.GetAsync(id);
         if (category == null)
@@ -54,9 +56,9 @@ public class CategoriesController(ICategoryService categoryService, IValidator<C
 
     // PUT api/<CategoriesController>/5
     [HttpPut("{id}")]
-    public async Task<ActionResult> Put(int id, [FromBody] CategoryDTO category) 
+    public async Task<ActionResult> Put(int id, [FromBody] CategoryDTO category)
     {
-        
+
         var validationResult = categoryValidator.Validate(category);
         if (!validationResult.IsValid)
         {
@@ -78,7 +80,7 @@ public class CategoriesController(ICategoryService categoryService, IValidator<C
     [HttpDelete("{id}")]
     public async Task<ActionResult> Delete(int id)
     {
-    var deleted = await categoryService.DeleteAsync(id);    
-        return deleted == false ? BadRequest("Category is not deleted") : Ok(deleted);
+        var deleted = await categoryService.DeleteAsync(id);
+        return !deleted ? BadRequest("Category is not deleted") : Ok(deleted);
     }
 }

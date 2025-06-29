@@ -7,9 +7,6 @@ public class CartItemDTOValidator : AbstractValidator<CartItemDTO>
 {
     public CartItemDTOValidator()
     {
-        RuleFor(x => x.CartId)
-            .NotEmpty()
-            .WithMessage("CartId is required");
         RuleFor(x => x.ProductId)
             .NotEmpty()
             .WithMessage("ProductId status is required");

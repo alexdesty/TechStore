@@ -1,9 +1,12 @@
 ﻿using AutoMapper;
 using FluentValidation;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using TechStore.Api.DTO;
+using TechStore.Api.DTOValidators;
 using TechStore.Domain.Entities;
 using TechStore.Domain.Interfaces.Services;
+using TechStore.Domain.Pagination;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -15,11 +18,12 @@ public class UsersController(IUserService userService, IValidator<UserDTO> userV
 {
     // GET: api/<UsersController>
     [HttpGet]
-    public async Task<IActionResult> Get()
+    public async Task<ActionResult<PaginatedList<UserDTO>>> Get(int pageIndex = 1, int pageSize = 1)
     {
-        var users = await userService.GetAllAsync();
+        var users = await userService.GetAllAsync(pageIndex, pageSize);
         var userDTO = mapper.Map<List<UserDTO>>(users);
-        return Ok(userDTO);
+        var pagedDTO = new PaginatedList<UserDTO>(userDTO, pageIndex, pageSize);
+        return Ok(pagedDTO);
     }
 
     // GET api/<UsersController>/5
@@ -77,6 +81,6 @@ public class UsersController(IUserService userService, IValidator<UserDTO> userV
     public async Task<ActionResult> Delete(int id)
     {
         var deleted = await userService.DeleteAsync(id);
-        return deleted == false ? BadRequest("User is not deleted") : Ok(deleted);
+        return !deleted ? BadRequest("User is not deleted") : Ok(deleted);
     }
 }

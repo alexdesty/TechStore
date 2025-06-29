@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TechStore.Domain.Entities;
+using TechStore.Domain.Pagination;
 
 namespace TechStore.Domain.Interfaces.Services;
 
@@ -13,5 +14,5 @@ public interface IShopAddressService
     Task<ShopAddress> UpdateAsync(ShopAddress shopAddress);
     Task<bool> DeleteAsync(int id);
     Task<ShopAddress?> GetAsync(int id);
-    Task<IEnumerable<ShopAddress>> GetAllAsync();
+    Task<PaginatedList<ShopAddress>> GetAllAsync(int pageIndex, int pageSize);
 }

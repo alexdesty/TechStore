@@ -1,10 +1,14 @@
 ﻿using AutoMapper;
 using FluentValidation;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using TechStore.Api.DTO;
+using TechStore.Api.DTOValidators;
 using TechStore.Domain.Entities;
 using TechStore.Domain.Interfaces.Services;
+using TechStore.Domain.Pagination;
+
+// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace TechStore.Api.Controllers;
 
@@ -14,11 +18,12 @@ public class OrdersController(IOrderService orderService, IValidator<OrderDTO> o
 {
     // GET: api/<OrdersController>
     [HttpGet]
-    public async Task<IActionResult> Get()
+    public async Task<ActionResult<PaginatedList<OrderDTO>>> Get(int pageIndex = 1, int pageSize = 1)
     {
-        var orders = await orderService.GetAllAsync();
+        var orders = await orderService.GetAllAsync(pageIndex, pageSize);
         var orderDTO = mapper.Map<List<OrderDTO>>(orders);
-        return Ok(orderDTO);
+        var pagedDTO = new PaginatedList<OrderDTO>(orderDTO, pageIndex, pageSize);
+        return Ok(pagedDTO);
     }
 
     // GET api/<OrdersController>/5
@@ -76,6 +81,6 @@ public class OrdersController(IOrderService orderService, IValidator<OrderDTO> o
     public async Task<ActionResult> Delete(int id)
     {
         var deleted = await orderService.DeleteAsync(id);
-        return deleted == false ? BadRequest("Order is not deleted") : Ok(deleted);
+        return !deleted ? BadRequest("Order is not deleted") : Ok(deleted);
     }
 }

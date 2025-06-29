@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TechStore.Domain.Entities;
+using TechStore.Domain.Pagination;
 
 namespace TechStore.Domain.Interfaces.Services;
 
@@ -13,5 +14,5 @@ public interface ICartService
     Task<Cart> UpdateAsync(Cart cart);
     Task<bool> DeleteAsync(int id);
     Task<Cart?> GetAsync(int id);
-    Task<IEnumerable<Cart>> GetAllAsync();
+    Task<PaginatedList<Cart>> GetAllAsync(int pageIndex, int pageSize);
 }

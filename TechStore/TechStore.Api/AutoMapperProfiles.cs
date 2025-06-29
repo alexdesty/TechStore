@@ -20,6 +20,7 @@ public class AutoMapperProfiles : Profile
         CreateMap<CartDTO, Cart>();
         CreateMap<CartItem, CartItemDTO>();
         CreateMap<CartItemDTO, CartItem>();
+        CreateMap<CartItemToCreateDTO, CartItem>();
         CreateMap<Order, OrderDTO>();
         CreateMap<OrderDTO, Order>();
     }

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,5 +19,13 @@ public class CartItemRepository(TechStoreDbContext context) : BaseRepository<Car
     {
         return context.Set<CartItem?>()
             .Where(x => x.CartId == id).ToList();
+    }
+
+    public async Task<bool> DeleteCartItemsByCartId(int id)
+    {
+        var cartItemsToDelete = context.Set<CartItem>()
+        .Where(x => x.CartId == id).ToList();
+        context.Set<CartItem>().RemoveRange(cartItemsToDelete);
+        return true;
     }
 }
