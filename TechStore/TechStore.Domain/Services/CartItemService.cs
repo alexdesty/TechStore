@@ -7,6 +7,7 @@ using TechStore.Domain.Entities;
 using TechStore.Domain.Exceptions;
 using TechStore.Domain.Interfaces.Repositories;
 using TechStore.Domain.Interfaces.Services;
+using TechStore.Domain.Pagination;
 
 namespace TechStore.Domain.Services;
 
@@ -25,14 +26,14 @@ public class CartItemService(IUnitOfWork unitOfWork) : ICartItemService
         return await unitOfWork.SaveAsync() > 0 ? deleted : throw new DomainException("Product has not been deleted from the cart");
     }
 
-    public async Task<IEnumerable<CartItem>> GetAllAsync()
-    {
-        return await unitOfWork.CartItemRepository.GetAllAsync();
-    }
-
     public async Task<CartItem?> GetAsync(int id)
     {
         return await unitOfWork.CartItemRepository.GetAsync(id);
+    }
+
+    public async Task<List<CartItem>> GetItemsByCartIdAsync(int id)
+    {
+        return await unitOfWork.CartItemRepository.GetItemsByCartIdAsync(id);
     }
 
     public async Task<CartItem> UpdateAsync(CartItem cartItem)
@@ -40,5 +41,13 @@ public class CartItemService(IUnitOfWork unitOfWork) : ICartItemService
         var updatedCartItem = unitOfWork.CartItemRepository.Update(cartItem);
         return await unitOfWork.SaveAsync() > 0 ? cartItem
             : throw new DomainException("Item in cart not updated");
+    }
+
+    public async Task<bool> DeleteCartItemsByCartId(int id)
+    {
+        var isDeleted = await unitOfWork.CartItemRepository.DeleteCartItemsByCartId(id);
+        await unitOfWork.SaveAsync();
+        return isDeleted;
+
     }
 }

@@ -7,6 +7,7 @@ using TechStore.Domain.Entities;
 using TechStore.Domain.Exceptions;
 using TechStore.Domain.Interfaces.Repositories;
 using TechStore.Domain.Interfaces.Services;
+using TechStore.Domain.Pagination;
 
 namespace TechStore.Domain.Services;
 
@@ -24,10 +25,9 @@ public class CartService(IUnitOfWork unitOfWork) : ICartService
         var deleted = await unitOfWork.CartRepository.DeleteAsync(id);
         return await unitOfWork.SaveAsync() > 0 ? deleted : throw new DomainException("Cart has not been deleted");
     }
-
-    public async Task<IEnumerable<Cart>> GetAllAsync()
+    public async Task<PaginatedList<Cart>> GetAllAsync(int pageIndex, int pageSize)
     {
-        return await unitOfWork.CartRepository.GetAllAsync();
+        return await unitOfWork.CartRepository.GetAllAsync(pageIndex, pageSize);
     }
 
     public async Task<Cart?> GetAsync(int id)

@@ -20,5 +20,4 @@ public class Product:Entity
 
     public Category Category { get; set; }
 
-    public List<ProductToProperty> ProductsToProperties { get; set; } = [];
 }

@@ -8,26 +8,27 @@ using TechStore.Domain.Enums;
 using TechStore.Domain.Exceptions;
 using TechStore.Domain.Interfaces.Repositories;
 using TechStore.Domain.Interfaces.Services;
+using TechStore.Domain.Pagination;
 namespace TechStore.Domain.Services;
 
 public class UserService(IUnitOfWork unitOfWork):IUserService
 {
-    public async Task<User> CreateAsync(User User)
+    public async Task<User> CreateAsync(User user)
     {
-        var addedUser = await unitOfWork.UserRepository.CreateAsync(User);
+        var addedUser = await unitOfWork.UserRepository.CreateAsync(user);
         return await unitOfWork.SaveAsync() > 0 ? addedUser : throw new DomainException("User has not been added");
     }
 
     public async Task<bool> DeleteAsync(int id)
     {
-        var User = await unitOfWork.UserRepository.GetAsync(id) ?? throw new DomainException("User not found");
+        var user = await unitOfWork.UserRepository.GetAsync(id) ?? throw new DomainException("User not found");
         var deleted = await unitOfWork.UserRepository.DeleteAsync(id);
         return await unitOfWork.SaveAsync() > 0 ? deleted : throw new DomainException("User has not been deleted");
     }
 
-    public async Task<IEnumerable<User>> GetAllAsync()
+    public async Task<PaginatedList<User>> GetAllAsync(int pageIndex, int pageSize)
     {
-        return await unitOfWork.UserRepository.GetAllAsync();
+        return await unitOfWork.UserRepository.GetAllAsync(pageIndex, pageSize);
     }
 
     public async Task<User?> GetAsync(int id)

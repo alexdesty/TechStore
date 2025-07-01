@@ -7,6 +7,7 @@ using TechStore.Domain.Entities;
 using TechStore.Domain.Exceptions;
 using TechStore.Domain.Interfaces.Repositories;
 using TechStore.Domain.Interfaces.Services;
+using TechStore.Domain.Pagination;
 
 namespace TechStore.Domain.Services;
 
@@ -25,9 +26,9 @@ public class ShopAddressService(IUnitOfWork unitOfWork):IShopAddressService
         return await unitOfWork.SaveAsync() > 0 ? deleted : throw new DomainException("Shop address has not been deleted");
     }
 
-    public async Task<IEnumerable<ShopAddress>> GetAllAsync()
+    public async Task<PaginatedList<ShopAddress>> GetAllAsync(int pageIndex, int pageSize)
     {
-        return await unitOfWork.ShopAddressRepository.GetAllAsync();
+        return await unitOfWork.ShopAddressRepository.GetAllAsync(pageIndex, pageSize);
     }
 
     public async Task<ShopAddress?> GetAsync(int id)

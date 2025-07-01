@@ -7,6 +7,7 @@ using TechStore.Domain.Entities;
 using TechStore.Domain.Exceptions;
 using TechStore.Domain.Interfaces.Repositories;
 using TechStore.Domain.Interfaces.Services;
+using TechStore.Domain.Pagination;
 
 namespace TechStore.Domain.Services;
 
@@ -25,9 +26,9 @@ public class ProductService(IUnitOfWork unitOfWork):IProductService
         return await unitOfWork.SaveAsync() > 0 ? deleted : throw new DomainException("Product has not been deleted");
     }
 
-    public async Task<IEnumerable<Product>> GetAllAsync()
+    public async Task<PaginatedList<Product>> GetAllAsync(int pageIndex, int pageSize)
     {
-        return await unitOfWork.ProductRepository.GetAllAsync();
+        return await unitOfWork.ProductRepository.GetAllAsync(pageIndex, pageSize);
     }
 
     public async Task<Product?> GetAsync(int id)
