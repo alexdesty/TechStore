@@ -12,7 +12,7 @@ using TechStore.DAL.Data;
 namespace TechStore.DAL.Migrations
 {
     [DbContext(typeof(TechStoreDbContext))]
-    [Migration("20250619172804_init")]
+    [Migration("20250701164713_init")]
     partial class init
     {
         /// <inheritdoc />
@@ -164,12 +164,12 @@ namespace TechStore.DAL.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Image")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
-
-                    b.Property<byte[]>("Photo")
-                        .HasColumnType("varbinary(max)");
 
                     b.Property<decimal>("Price")
                         .HasPrecision(10, 2)

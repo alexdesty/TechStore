@@ -65,7 +65,7 @@ namespace TechStore.DAL.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Price = table.Column<decimal>(type: "decimal(10,2)", precision: 10, scale: 2, nullable: false),
-                    Photo = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
+                    Image = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CategoryId = table.Column<int>(type: "int", nullable: false)
                 },
@@ -193,11 +193,11 @@ namespace TechStore.DAL.Migrations
 
             migrationBuilder.InsertData(
                 table: "Products",
-                columns: new[] { "Id", "CategoryId", "Description", "Name", "Photo", "Price" },
+                columns: new[] { "Id", "CategoryId", "Description", "Image", "Name", "Price" },
                 values: new object[,]
                 {
-                    { 1, 1, "Nice phone", "Iphone 14 Pro Max", null, 999m },
-                    { 2, 2, "Nice laptop", "Apple MacBook Pro 16.2 M3 Pro", null, 3000m }
+                    { 1, 1, "Nice phone", null, "Iphone 14 Pro Max", 999m },
+                    { 2, 2, "Nice laptop", null, "Apple MacBook Pro 16.2 M3 Pro", 3000m }
                 });
 
             migrationBuilder.CreateIndex(

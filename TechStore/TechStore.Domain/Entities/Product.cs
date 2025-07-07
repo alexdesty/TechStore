@@ -12,7 +12,7 @@ public class Product:Entity
 
     public decimal Price { get; set; }
 
-    public byte[]? Photo {  get; set; } 
+    public string? Image { get; set; }
 
     public string Description { get; set; } = string.Empty;
 

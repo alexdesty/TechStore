@@ -1,5 +1,6 @@
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 using TechStore.Api;
 using TechStore.Api.DTO;
 using TechStore.Api.DTOValidators;
@@ -50,7 +51,12 @@ builder.Services.AddScoped<IValidator<OrderDTO>, OrderDTOValidator>();
 builder.Services.AddScoped<IValidator<CartItemToCreateDTO>, CartItemToCreateDTOValidator>();
 builder.Services.AddAutoMapper(typeof(AutoMapperProfiles));
 
+var currentPath = builder.Environment.ContentRootPath;
+builder.Services.AddScoped<IFileUploadService>(_ => new FileUploadService(currentPath));
+
 var app = builder.Build();
+
+
 
 using (var scope = app.Services.CreateScope())
 {
@@ -68,6 +74,12 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(Path.Combine(app.Environment.ContentRootPath, "static", "images")),
+    RequestPath = "/images"
+});
 
 app.MapControllers();
 

@@ -161,12 +161,12 @@ namespace TechStore.DAL.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Image")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
-
-                    b.Property<byte[]>("Photo")
-                        .HasColumnType("varbinary(max)");
 
                     b.Property<decimal>("Price")
                         .HasPrecision(10, 2)
