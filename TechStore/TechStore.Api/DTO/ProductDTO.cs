@@ -13,7 +13,7 @@ public class ProductDTO
 
     public decimal Price { get; set; }
 
-    public byte[]? Photo { get; set; }
+    public string? Image { get; set; }
 
     public int CategoryId { get; set; }
 

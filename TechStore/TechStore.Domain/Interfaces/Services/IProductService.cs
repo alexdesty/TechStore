@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using TechStore.Domain.Entities;
 using TechStore.Domain.Pagination;
 
@@ -15,4 +16,5 @@ public interface IProductService
     Task<bool> DeleteAsync(int id);
     Task<Product?> GetAsync(int id);
     Task<PaginatedList<Product>> GetAllAsync(int pageIndex, int pageSize);
+    Task<string> UploadImageAsync(int productId, IFormFile file);
 }

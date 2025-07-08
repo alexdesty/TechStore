@@ -14,7 +14,7 @@ namespace TechStore.Api.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class ProductsController(IProductService productService, IValidator<ProductDTO> productValidator, IMapper mapper) : ControllerBase
+public class ProductsController(IProductService productService, IValidator<ProductDTO> productValidator, IMapper mapper, IFileUploadService fileUploadService) : ControllerBase
 {
     // GET: api/<ProductsController>
     [HttpGet]
@@ -82,5 +82,18 @@ public class ProductsController(IProductService productService, IValidator<Produ
     {
         var deleted = await productService.DeleteAsync(id);
         return !deleted ? BadRequest("Product is not deleted") : Ok(deleted);
+    }
+
+    [HttpPost("{id}/uploadImage")]
+    public async Task<IActionResult> UploadImage(int id, IFormFile file)
+    {
+        if (file == null || file.Length == 0)
+        {
+            return BadRequest("No file uploaded.");
+        }
+
+        var filename = await productService.UploadImageAsync(id, file);
+
+        return Ok(new { FileName = filename });
     }
 }
