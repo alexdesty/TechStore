@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using FluentValidation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using TechStore.Api.DTO;
@@ -12,11 +13,13 @@ using TechStore.Domain.Pagination;
 
 namespace TechStore.Api.Controllers;
 
+
 [Route("api/[controller]")]
 [ApiController]
 public class CategoriesController(ICategoryService categoryService, IValidator<CategoryDTO> categoryValidator, IMapper mapper) : ControllerBase
 {
     // GET: api/<CategoriesController>
+    [Authorize]
     [HttpGet]
     public async Task<ActionResult<PaginatedList<CategoryDTO>>> Get(int pageIndex = 1, int pageSize = 1)
     {

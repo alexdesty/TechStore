@@ -1,7 +1,12 @@
 using FluentValidation;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using System.Text;
 using TechStore.Api;
+using TechStore.Api.Configurations;
 using TechStore.Api.DTO;
 using TechStore.Api.DTOValidators;
 using TechStore.DAL.Data;
@@ -17,11 +22,36 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.Configure<JwtConfiguration>(builder.Configuration.GetSection(nameof(JwtConfiguration)));
+builder.Services.AddSwaggerGen(options =>
+{
+    options.AddSecurityDefinition(JwtBearerDefaults.AuthenticationScheme, new OpenApiSecurityScheme
+    {
+        Scheme = JwtBearerDefaults.AuthenticationScheme,
+        Type = SecuritySchemeType.Http,
+        Name = "Authorization",
+    });
+
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = JwtBearerDefaults.AuthenticationScheme
+                }
+            },
+            Array.Empty<string>()
+        }
+    });
+});
 
 Registrator.RegisterServices(builder.Services, builder.Configuration);
+
+builder.Services.AddScoped<ITokensService, TokensService>();
 
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<ICartItemService, CartItemService>();
@@ -54,6 +84,23 @@ builder.Services.AddAutoMapper(typeof(AutoMapperProfiles));
 var currentPath = builder.Environment.ContentRootPath;
 builder.Services.AddScoped<IFileUploadService>(_ => new FileUploadService(currentPath));
 
+var jwtConfig = builder.Configuration.GetSection(nameof(JwtConfiguration)).Get<JwtConfiguration>();
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(config =>
+    {
+        config.Audience = jwtConfig.Audience;
+        config.RequireHttpsMetadata = false;
+        config.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidIssuer = jwtConfig.Issuer,
+            ValidAudience = jwtConfig.Audience,
+            ValidateAudience = true,
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtConfig.SecretKey)),
+        };
+    });
+
 var app = builder.Build();
 
 
@@ -73,6 +120,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.UseStaticFiles(new StaticFileOptions
